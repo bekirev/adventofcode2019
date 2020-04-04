@@ -1,3 +1,5 @@
+package adventofcode2019
+
 import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
@@ -7,7 +9,11 @@ import java.util.stream.Stream
 object PathFinder {
     private fun uriFromResources(strPath: String): URI = javaClass.classLoader.getResource(strPath).toURI()
 
-    fun fromResources(strPath: String): Path = Paths.get(uriFromResources(strPath))
+    fun fromResources(strPath: String): Path = Paths.get(
+        uriFromResources(
+            strPath
+        )
+    )
 }
 
 fun linesFromResource(strPath: String): Stream<String> =

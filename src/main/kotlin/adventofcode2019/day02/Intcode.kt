@@ -1,6 +1,6 @@
 package adventofcode2019.day02
 
-import linesFromResource
+import adventofcode2019.linesFromResource
 import java.nio.file.Paths
 import kotlin.streams.asSequence
 
