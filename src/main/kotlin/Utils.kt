@@ -32,3 +32,12 @@ fun Stream<Long>.sum(): Long {
         { acc1, acc2 -> acc1 + acc2 }
     ) ?: 0
 }
+
+fun Stream<String>.concat(): String {
+    return reduce<StringBuilder>(
+        StringBuilder(),
+        {acc, value -> acc.append(value) },
+        {acc1, acc2 -> acc1.append(acc2) }
+    ).toString()
+}
+
