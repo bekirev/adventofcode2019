@@ -47,3 +47,6 @@ fun Stream<String>.concat(): String {
     ).toString()
 }
 
+fun <T, U> cartesianProduct(c1: Collection<T>, c2: Collection<U>): List<Pair<T, U>> {
+    return c1.flatMap { c1Elem -> c2.map { c2Elem -> c1Elem to c2Elem } }
+}
