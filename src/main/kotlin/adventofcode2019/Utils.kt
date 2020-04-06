@@ -1,5 +1,6 @@
 package adventofcode2019
 
+import java.lang.IllegalArgumentException
 import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
@@ -49,4 +50,12 @@ fun Stream<String>.concat(): String {
 
 fun <T, U> cartesianProduct(c1: Collection<T>, c2: Collection<U>): List<Pair<T, U>> {
     return c1.flatMap { c1Elem -> c2.map { c2Elem -> c1Elem to c2Elem } }
+}
+
+fun Int.pow(n: Int): Int {
+    tailrec fun pow(value: Int, n: Int, result: Int): Int {
+        return if (n < 1) result else pow(value, n - 1, result * value)
+    }
+    if (n < 0) throw IllegalArgumentException("Negative power is not supported")
+    else return pow(this, n, 1)
 }
