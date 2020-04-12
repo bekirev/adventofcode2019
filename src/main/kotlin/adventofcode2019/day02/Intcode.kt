@@ -28,9 +28,7 @@ fun main() {
 }
 
 fun createAndRunIntcode(noun: Int, verb: Int): Intcode {
-    val intcode = createIntcode(ArrayMemory.fromSequence(getInput()).inited(noun, verb))
-    intcode.runUntilHalted()
-    return intcode
+    return createIntcode(ArrayMemory.fromSequence(getInput()).inited(noun, verb)).runUntilHalted()
 }
 
 fun createIntcode(memory: Memory): Intcode {
