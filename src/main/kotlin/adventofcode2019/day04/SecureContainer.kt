@@ -1,8 +1,8 @@
 package adventofcode2019.day04
 
-import adventofcode2019.pow
+import adventofcode2019.digitsCount
+import adventofcode2019.getDigitAt
 import java.util.stream.IntStream
-import kotlin.math.log10
 
 fun main() {
     println(
@@ -17,14 +17,6 @@ fun main() {
             .filter(::digitsNeverIncrease)
             .count()
     )
-}
-
-fun Int.digitsCount(): Int {
-    return log10(this.toDouble()).toInt() + 1
-}
-
-fun Int.getDigitAt(index: Int): Int {
-    return (this % 10.pow(index + 1) - this % 10.pow(index)) / 10.pow(index)
 }
 
 fun hasTwoEqualAdjacentDigits(password: Int): Boolean {

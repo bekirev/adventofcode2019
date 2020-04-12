@@ -1,11 +1,11 @@
 package adventofcode2019
 
-import java.lang.IllegalArgumentException
 import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Stream
+import kotlin.math.log10
 
 object PathFinder {
     private fun uriFromResources(strPath: String): URI = javaClass.classLoader.getResource(strPath).toURI()
@@ -58,4 +58,17 @@ fun Int.pow(n: Int): Int {
     }
     if (n < 0) throw IllegalArgumentException("Negative power is not supported")
     else return pow(this, n, 1)
+}
+
+fun Int.getDigitAt(index: Int): Int {
+    return (this % 10.pow(index + 1) - this % 10.pow(index)) / 10.pow(index)
+}
+
+fun Int.first(n: Int): Int {
+    if (n < 1) throw IllegalArgumentException("Negative power is not supported")
+    return (this % 10.pow(n))
+}
+
+fun Int.digitsCount(): Int {
+    return log10(this.toDouble()).toInt() + 1
 }
