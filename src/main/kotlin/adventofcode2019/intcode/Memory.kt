@@ -6,7 +6,11 @@ interface Memory {
 }
 
 class ArrayMemory(private val array: IntArray) : Memory {
-    companion object Loader {
+    companion object {
+        fun ArrayMemory.copyOf(): ArrayMemory {
+            return ArrayMemory(array.copyOf())
+        }
+
         fun fromSequence(values: Sequence<Int>): ArrayMemory {
             return ArrayMemory(values.toList().toIntArray())
         }

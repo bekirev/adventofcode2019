@@ -27,7 +27,7 @@ fun main() {
     }
 }
 
-fun createAndRunIntcode(noun: Int, verb: Int): Intcode {
+private fun createAndRunIntcode(noun: Int, verb: Int): Intcode {
     return createIntcode(ArrayMemory.fromSequence(getInput()).inited(noun, verb)).runUntilHalted()
 }
 
@@ -46,7 +46,7 @@ fun createIntcode(memory: Memory): Intcode {
     )
 }
 
-fun Memory.inited(noun: Int, verb: Int): Memory = this.apply {
+private fun Memory.inited(noun: Int, verb: Int): Memory = this.apply {
     this[1] = noun
     this[2] = verb
 }
