@@ -20,7 +20,7 @@ class OrbitMap private constructor(private val root: Node) {
                         }
                         nodes
                     }
-                } as Set<Node>
+                }
                 return Node(root, nodes)
             }
             return OrbitMap(createTree(map, COM))

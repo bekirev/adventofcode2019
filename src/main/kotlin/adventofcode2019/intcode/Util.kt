@@ -4,12 +4,16 @@ import adventofcode2019.linesFromResource
 import java.nio.file.Path
 import kotlin.streams.asSequence
 
-fun createIntcode(memory: Memory): Intcode {
-    return createIntcode(memory, ReadLineInputInstruction, PrintlnOutputInstruction)
-}
+//fun createIntCodeAllInstr(memory: Memory): IntCode {
+//    return createIntCodeAllInstr(memory, ReadLineInputInstruction, PrintlnOutputInstruction)
+//}
 
-fun createIntcode(memory: Memory, inputInstruction: Instruction, outputInstruction: Instruction): Intcode {
-    return Intcode(
+fun createIntCodeAllInstr(
+    memory: Memory,
+    inputInstruction: Instruction,
+    outputInstruction: Instruction
+): IntCode {
+    return IntCode(
         memory,
         HybridCommandReader(
             MapInstructionReader(

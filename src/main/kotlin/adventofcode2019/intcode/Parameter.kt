@@ -21,12 +21,8 @@ object EmptyInstructionParameters : InstructionParameters {
 
 class ArrayInstructionParameters private constructor(private val args: Array<Parameter>) : InstructionParameters {
     companion object {
-        fun fromArray(args: Array<Parameter>): ArrayInstructionParameters {
-            return ArrayInstructionParameters(args.copyOf())
-        }
-
-        fun fromList(args: List<Parameter>): ArrayInstructionParameters {
-            return ArrayInstructionParameters(args.toTypedArray())
+        fun fromSequence(args: Sequence<Parameter>): ArrayInstructionParameters {
+            return ArrayInstructionParameters(args.toList().toTypedArray())
         }
     }
     override fun size(): Int = args.size

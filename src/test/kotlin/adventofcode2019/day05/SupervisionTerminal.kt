@@ -1,234 +1,189 @@
 package adventofcode2019.day05
 
-import adventofcode2019.intcode.AddInstruction
 import adventofcode2019.intcode.ArrayMemory
-import adventofcode2019.intcode.Code
-import adventofcode2019.intcode.Equals
-import adventofcode2019.intcode.HaltInstruction
-import adventofcode2019.intcode.HybridCommandReader
-import adventofcode2019.intcode.InputInstruction
-import adventofcode2019.intcode.Intcode
-import adventofcode2019.intcode.JumpIfFalse
-import adventofcode2019.intcode.JumpIfTrue
-import adventofcode2019.intcode.LessThan
-import adventofcode2019.intcode.MapInstructionReader
 import adventofcode2019.intcode.Memory
-import adventofcode2019.intcode.MultiplyInstruction
+import adventofcode2019.intcode.OutputConsumer
 import adventofcode2019.intcode.OutputInstruction
-import adventofcode2019.intcode.runUntilHalted
 import org.junit.Assert
 import org.junit.Test
 
 class SupervisionTerminal {
+    private fun createAndRunIntCode(memory: Memory, input: Int, outputConsumer: OutputConsumer) {
+        createAndRunIntCode(
+            memory,
+            input,
+            OutputInstruction(outputConsumer)
+        )
+    }
+
     @Test
     fun test1() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,9,8,9,10,9,4,9,99,-1,8),
-            7
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            7,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test2() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,9,8,9,10,9,4,9,99,-1,8),
-            8
-        ) { output ->
-            Assert.assertEquals(1, output)
-        }.runUntilHalted()
+            8,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1, output) }
+        )
     }
 
     @Test
     fun test3() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,9,8,9,10,9,4,9,99,-1,8),
-            9
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            9,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test4() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,9,7,9,10,9,4,9,99,-1,8),
-            7
-        ) { output ->
-            Assert.assertEquals(1, output)
-        }.runUntilHalted()
+            7,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1, output) }
+        )
     }
 
     @Test
     fun test5() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,9,7,9,10,9,4,9,99,-1,8),
-            8
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            8,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test6() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,9,7,9,10,9,4,9,99,-1,8),
-            9
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            9,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test7() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1108,-1,8,3,4,3,99),
-            7
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            7,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test8() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1108,-1,8,3,4,3,99),
-            8
-        ) { output ->
-            Assert.assertEquals(1, output)
-        }.runUntilHalted()
+            8,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1, output) }
+        )
     }
 
     @Test
     fun test9() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1108,-1,8,3,4,3,99),
-            9
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            9,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test10() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1107,-1,8,3,4,3,99),
-            7
-        ) { output ->
-            Assert.assertEquals(1, output)
-        }.runUntilHalted()
+            7,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1, output) }
+        )
     }
 
     @Test
     fun test11() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1107,-1,8,3,4,3,99),
-            8
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            8,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test12() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1107,-1,8,3,4,3,99),
-            9
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            9,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test13() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9),
-            0
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            0,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test14() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9),
-            2
-        ) { output ->
-            Assert.assertEquals(1, output)
-        }.runUntilHalted()
+            2,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1, output) }
+        )
     }
 
     @Test
     fun test15() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1105,-1,9,1101,0,0,12,4,12,99,1),
-            0
-        ) { output ->
-            Assert.assertEquals(0, output)
-        }.runUntilHalted()
+            0,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(0, output) }
+        )
     }
 
     @Test
     fun test16() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,3,1105,-1,9,1101,0,0,12,4,12,99,1),
-            2
-        ) { output ->
-            Assert.assertEquals(1, output)
-        }.runUntilHalted()
+            2,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1, output) }
+        )
     }
 
     @Test
     fun test17() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99),
-            7
-        ) { output ->
-            Assert.assertEquals(999, output)
-        }.runUntilHalted()
+            7,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(999, output) }
+        )
     }
 
     @Test
     fun test18() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99),
-            8
-        ) { output ->
-            Assert.assertEquals(1000, output)
-        }.runUntilHalted()
+            8,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1000, output) }
+        )
     }
 
     @Test
     fun test19() {
-        createIntcode(
+        createAndRunIntCode(
             ArrayMemory.fromVararg(3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99),
-            9
-        ) { output ->
-            Assert.assertEquals(1001, output)
-        }.runUntilHalted()
-    }
-
-
-    fun createIntcode(memory: Memory, input: Int, outputConsumer: (Int) -> Unit): Intcode {
-        return Intcode(
-            memory,
-            HybridCommandReader(
-                MapInstructionReader(
-                    mapOf(
-                        Code(1) to AddInstruction,
-                        Code(2) to MultiplyInstruction,
-                        Code(3) to InputInstruction { input },
-                        Code(4) to OutputInstruction(outputConsumer),
-                        Code(5) to JumpIfTrue,
-                        Code(6) to JumpIfFalse,
-                        Code(7) to LessThan,
-                        Code(8) to Equals,
-                        Code(99) to HaltInstruction
-                    )
-                )
-            )
+            9,
+            object : OutputConsumer { override suspend fun consume(output: Int) = Assert.assertEquals(1001, output) }
         )
     }
 }
