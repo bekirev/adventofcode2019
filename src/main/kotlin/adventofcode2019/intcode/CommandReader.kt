@@ -4,6 +4,7 @@ import adventofcode2019.intcode.Parameter.BasicParameter
 import adventofcode2019.intcode.Parameter.ComplexParameter
 import adventofcode2019.intcode.ParameterMode.IMMEDIATE_MODE
 import adventofcode2019.intcode.ParameterMode.POSITION_MODE
+import adventofcode2019.intcode.ParameterMode.RELATIVE
 
 interface CommandReader {
     fun read(intCodeState: IntCodeState): Command
@@ -13,7 +14,7 @@ class BasicCommandReader(instructionReader: InstructionReader) : CommandReader {
     private val commandParser: CommandParser = BasicCommandParser(instructionReader)
 
     override fun read(intCodeState: IntCodeState): Command {
-        val code = Code(intCodeState.memory[intCodeState.position])
+        val code = Code(intCodeState.memory[intCodeState.position].toInt())
         return commandParser.read(intCodeState, code)
     }
 }
@@ -44,7 +45,7 @@ class HybridCommandReader(instructionReader: InstructionReader) : CommandReader 
     private val complexCommandParser: CommandParser = ComplexCommandParser(instructionReader)
 
     override fun read(intCodeState: IntCodeState): Command {
-        val code = Code(intCodeState.memory[intCodeState.position])
+        val code = Code(intCodeState.memory[intCodeState.position].toInt())
         return when {
             code.length() < 3 -> basicCommandParser.read(intCodeState, code)
             else -> complexCommandParser.read(intCodeState, code)
@@ -75,6 +76,7 @@ private class ComplexCommandParser(private val instructionReader: InstructionRea
                     when (paramModeCode) {
                         0 -> POSITION_MODE
                         1 -> IMMEDIATE_MODE
+                        2 -> RELATIVE
                         else -> throw IllegalArgumentException("Unknown parameter mode code: $paramModeCode")
                     }
                 }

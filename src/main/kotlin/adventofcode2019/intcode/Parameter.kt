@@ -1,12 +1,12 @@
 package adventofcode2019.intcode
 
-sealed class Parameter(open val value: Int) {
-    data class BasicParameter(override val value: Int) : Parameter(value)
-    data class ComplexParameter(override val value: Int, val parameterMode: ParameterMode) : Parameter(value)
+sealed class Parameter(open val value: IntCodeNumber) {
+    data class BasicParameter(override val value: IntCodeNumber) : Parameter(value)
+    data class ComplexParameter(override val value: IntCodeNumber, val parameterMode: ParameterMode) : Parameter(value)
 }
 
 enum class ParameterMode {
-    POSITION_MODE, IMMEDIATE_MODE
+    POSITION_MODE, IMMEDIATE_MODE, RELATIVE
 }
 
 interface InstructionParameters {

@@ -7,9 +7,9 @@ class IntCode private constructor(
     private val intCodeState: IntCodeState,
     private val commandReader: CommandReader
 ) {
-    constructor(memory: Memory, commandReader: CommandReader) : this(IntCodeState(memory, 0, RUNNING), commandReader)
+    constructor(memory: Memory, commandReader: CommandReader) : this(IntCodeState(memory, 0, RUNNING, 0), commandReader)
 
-    fun memoryAt(index: Int): Int {
+    fun memoryAt(index: Int): IntCodeNumber {
         return intCodeState.memory[index]
     }
 
@@ -21,7 +21,7 @@ class IntCode private constructor(
     }
 }
 
-data class IntCodeState(val memory: Memory, var position: Int, var state: State)
+data class IntCodeState(val memory: Memory, var position: Int, var state: State, var relativeBase: Int)
 
 enum class State {
     RUNNING,

@@ -72,3 +72,7 @@ fun Int.first(n: Int): Int {
 fun Int.digitsCount(): Int {
     return log10(this.toDouble()).toInt() + 1
 }
+
+fun Long.digitsCount(): Int {
+    return log10(this.toDouble()).toInt() + 1
+}

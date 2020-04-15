@@ -1,9 +1,11 @@
 package adventofcode2019.intcode
 
+import adventofcode2019.intcode.IntCodeNumber.Companion
 import adventofcode2019.intcode.Parameter.ComplexParameter
 import adventofcode2019.intcode.Parameter.BasicParameter
 import adventofcode2019.intcode.ParameterMode.IMMEDIATE_MODE
 import adventofcode2019.intcode.ParameterMode.POSITION_MODE
+import adventofcode2019.intcode.ParameterMode.RELATIVE
 import adventofcode2019.intcode.State.HALTED
 import adventofcode2019.intcode.State.RUNNING
 import kotlin.IllegalArgumentException
@@ -13,17 +15,28 @@ interface Instruction {
     suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters)
 }
 
-private fun Parameter.resolveValue(memory: Memory): Int {
+private fun Parameter.resolveValue(intCodeState: IntCodeState): IntCodeNumber {
+    fun ComplexParameter.realValue(intCodeState: IntCodeState): IntCodeNumber = when (parameterMode) {
+        POSITION_MODE -> intCodeState.memory[value.toInt()]
+        IMMEDIATE_MODE -> value
+        RELATIVE -> intCodeState.memory[intCodeState.relativeBase + value.toInt()]
+    }
     return when (this) {
-        is BasicParameter -> memory[value]
-        is ComplexParameter -> realValue(memory)
+        is BasicParameter -> intCodeState.memory[value.toInt()]
+        is ComplexParameter -> realValue(intCodeState)
     }
 }
 
-private fun ComplexParameter.realValue(memory: Memory): Int {
-    return when (parameterMode) {
-        POSITION_MODE -> memory[value]
-        IMMEDIATE_MODE -> value
+
+private fun Parameter.resolveReference(intCodeState: IntCodeState): Int {
+    fun ComplexParameter.resolveReference(intCodeState: IntCodeState): Int = when (parameterMode) {
+        POSITION_MODE -> value.toInt()
+        IMMEDIATE_MODE -> value.toInt()
+        RELATIVE -> intCodeState.relativeBase + value.toInt()
+    }
+    return when (this) {
+        is BasicParameter -> value.toInt()
+        is ComplexParameter -> resolveReference(intCodeState)
     }
 }
 
@@ -37,7 +50,7 @@ object HaltInstruction : Instruction {
 object AddInstruction : Instruction {
     override fun paramsCount(): Int = 3
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
-        intCodeState.memory[params[2].value] = params[0].resolveValue(intCodeState.memory) + params[1].resolveValue(intCodeState.memory)
+        intCodeState.memory[params[2].resolveReference(intCodeState)] = params[0].resolveValue(intCodeState) + params[1].resolveValue(intCodeState)
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }
@@ -46,7 +59,7 @@ object AddInstruction : Instruction {
 object MultiplyInstruction : Instruction {
     override fun paramsCount(): Int = 3
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
-        intCodeState.memory[params[2].value] = params[0].resolveValue(intCodeState.memory) * params[1].resolveValue(intCodeState.memory)
+        intCodeState.memory[params[2].resolveReference(intCodeState)] = params[0].resolveValue(intCodeState) * params[1].resolveValue(intCodeState)
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }
@@ -54,7 +67,11 @@ object MultiplyInstruction : Instruction {
 
 object ReadLineInputInstruction : Instruction {
     private val inputInstruction: Instruction = InputInstruction(object : InputProvider {
-        override suspend fun get(): Int = readLine()?.toInt() ?: throw IllegalArgumentException("Line is null")
+        override suspend fun get(): IntCodeNumber {
+            return readLine()?.let { line ->
+                IntCodeNumber.fromString(line)
+            } ?: throw IllegalArgumentException("Line is null")
+        }
     })
 
     override fun paramsCount(): Int = inputInstruction.paramsCount()
@@ -66,19 +83,19 @@ class InputInstruction(private val inputProvider: InputProvider) : Instruction {
 
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
         val input = inputProvider.get()
-        intCodeState.memory[params[0].value] = input
+        intCodeState.memory[params[0].resolveReference(intCodeState)] = input
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }
 }
 
 interface InputProvider {
-    suspend fun get(): Int
+    suspend fun get(): IntCodeNumber
 }
 
 object PrintlnOutputInstruction : Instruction {
     private val outputInstruction: Instruction = OutputInstruction(object : OutputConsumer {
-        override suspend fun consume(output: Int) = println(output)
+        override suspend fun consume(output: IntCodeNumber) = println(output)
     })
 
     override fun paramsCount(): Int = outputInstruction.paramsCount()
@@ -91,55 +108,71 @@ class OutputInstruction(private val outputConsumer: OutputConsumer) : Instructio
     override fun paramsCount(): Int = 1
 
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
-        outputConsumer.consume(params[0].resolveValue(intCodeState.memory))
+        outputConsumer.consume(params[0].resolveValue(intCodeState))
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }
 }
 
 interface OutputConsumer {
-    suspend fun consume(output: Int)
+    suspend fun consume(output: IntCodeNumber)
 }
 
-object JumpIfTrue : Instruction {
+object JumpIfTrueInstruction : Instruction {
     override fun paramsCount(): Int = 2
 
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
         intCodeState.position = when {
-            params[0].resolveValue(intCodeState.memory) != 0 -> params[1].resolveValue(intCodeState.memory)
+            params[0].resolveValue(intCodeState) != IntCodeNumber.ZERO -> params[1].resolveValue(intCodeState).toInt()
             else -> intCodeState.position + paramsCount() + 1
         }
         intCodeState.state = RUNNING
     }
 }
 
-object JumpIfFalse : Instruction {
+object JumpIfFalseInstruction : Instruction {
     override fun paramsCount(): Int = 2
 
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
         intCodeState.position = when {
-            params[0].resolveValue(intCodeState.memory) == 0 -> params[1].resolveValue(intCodeState.memory)
+            params[0].resolveValue(intCodeState) == Companion.ZERO -> params[1].resolveValue(intCodeState).toInt()
             else -> intCodeState.position + paramsCount() + 1
         }
         intCodeState.state = RUNNING
     }
 }
 
-object LessThan : Instruction {
+object LessThanInstruction : Instruction {
     override fun paramsCount(): Int = 3
 
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
-        intCodeState.memory[params[2].value] = if (params[0].resolveValue(intCodeState.memory) < params[1].resolveValue(intCodeState.memory)) 1 else 0
+        intCodeState.memory[params[2].resolveReference(intCodeState)] = when {
+            params[0].resolveValue(intCodeState) < params[1].resolveValue(intCodeState) -> IntCodeNumber.ONE
+            else -> IntCodeNumber.ZERO
+        }
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }
 }
 
-object Equals : Instruction {
+object EqualsInstruction : Instruction {
     override fun paramsCount(): Int = 3
 
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
-        intCodeState.memory[params[2].value] = if (params[0].resolveValue(intCodeState.memory) == params[1].resolveValue(intCodeState.memory)) 1 else 0
+        intCodeState.memory[params[2].resolveReference(intCodeState)] = when {
+            params[0].resolveValue(intCodeState) == params[1].resolveValue(intCodeState) -> IntCodeNumber.ONE
+            else -> Companion.ZERO
+        }
+        intCodeState.state = RUNNING
+        intCodeState.position += paramsCount() + 1
+    }
+}
+
+object AdjustRelativeBaseInstruction : Instruction {
+    override fun paramsCount(): Int = 1
+
+    override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
+        intCodeState.relativeBase += params[0].resolveValue(intCodeState).toInt()
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }

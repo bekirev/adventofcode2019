@@ -1,17 +1,27 @@
 package adventofcode2019.day02
 
-import adventofcode2019.intcode.*
+import adventofcode2019.intcode.AddInstruction
+import adventofcode2019.intcode.ArrayMemory
 import adventofcode2019.intcode.ArrayMemory.Companion.copyOf
+import adventofcode2019.intcode.BasicCommandReader
+import adventofcode2019.intcode.Code
+import adventofcode2019.intcode.HaltInstruction
+import adventofcode2019.intcode.IntCode
+import adventofcode2019.intcode.IntCodeNumber
+import adventofcode2019.intcode.MapInstructionReader
+import adventofcode2019.intcode.Memory
+import adventofcode2019.intcode.MultiplyInstruction
+import adventofcode2019.intcode.getIntCodeInput
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Paths
 
 fun main() {
-    val memory = ArrayMemory.fromSequence(getInput(Paths.get("adventofcode2019", "day02", "input.txt")))
+    val memory = ArrayMemory.fromSequence(getIntCodeInput(Paths.get("adventofcode2019", "day02", "input.txt")))
     println(initMemoryAndRunIntCode(memory.copyOf(), 12, 2).memoryAt(0))
     loop@ for (noun in 0..99) {
         for (verb in 0..99) {
             val result = initMemoryAndRunIntCode(memory.copyOf(), noun, verb).memoryAt(0)
-            if (result == 19690720) {
+            if (result == IntCodeNumber.fromInt(19690720)) {
                 println("noun: $noun, verb: $verb, result: ${100 * noun + verb}")
                 break@loop
             }
@@ -20,8 +30,8 @@ fun main() {
 }
 
 private fun initMemoryAndRunIntCode(memory: Memory, noun: Int, verb: Int): IntCode {
-    memory[1] = noun
-    memory[2] = verb
+    memory[1] = IntCodeNumber.fromInt(noun)
+    memory[2] = IntCodeNumber.fromInt(verb)
     return runIntCode(memory)
 }
 
