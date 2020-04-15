@@ -158,9 +158,7 @@ private data class Angle(val x: Int, val y: Int) : Comparable<Angle> {
             val radian: Double by lazy {
                 val epsilon = 0.000001
                 when {
-                    x.absoluteValue < epsilon -> {
-                        if (y > 0) 0.0 else -PI
-                    }
+                    x.absoluteValue < epsilon -> if (y > 0) 0.0 else -PI
                     x >= epsilon -> asin(y) - PI / 2
                     else -> PI / 2 - asin(y)
                 }
