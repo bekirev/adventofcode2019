@@ -1,7 +1,6 @@
 package adventofcode2019.day06
 
 import adventofcode2019.linesFromResource
-import java.lang.IllegalArgumentException
 import java.nio.file.Paths
 import java.util.stream.Collectors
 
