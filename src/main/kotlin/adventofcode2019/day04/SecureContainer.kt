@@ -19,7 +19,7 @@ fun main() {
     )
 }
 
-fun hasTwoEqualAdjacentDigits(password: Int): Boolean {
+private fun hasTwoEqualAdjacentDigits(password: Int): Boolean {
     for (i: Int in 0 until password.digitsCount()) {
         if (password.getDigitAt(i) == password.getDigitAt(i + 1))
             return true
@@ -27,7 +27,7 @@ fun hasTwoEqualAdjacentDigits(password: Int): Boolean {
     return false
 }
 
-fun hasAGroupOfExactlyTwoEqualAdjacentDigits(password: Int): Boolean {
+private fun hasAGroupOfExactlyTwoEqualAdjacentDigits(password: Int): Boolean {
     for (i: Int in 0..password.digitsCount() - 2) {
         if (password.getDigitAt(i) == password.getDigitAt(i + 1)
             && (i == 0 || i != 0 && password.getDigitAt(i - 1) != password.getDigitAt(i))
@@ -38,7 +38,7 @@ fun hasAGroupOfExactlyTwoEqualAdjacentDigits(password: Int): Boolean {
     return false
 }
 
-fun digitsNeverIncrease(password: Int): Boolean {
+private fun digitsNeverIncrease(password: Int): Boolean {
     for (i: Int in 0 until password.digitsCount()) {
         if (password.getDigitAt(i) < password.getDigitAt(i + 1))
             return false

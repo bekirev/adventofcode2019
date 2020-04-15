@@ -35,7 +35,7 @@ private fun initMemoryAndRunIntCode(memory: Memory, noun: Int, verb: Int): IntCo
     return runIntCode(memory)
 }
 
-fun runIntCode(memory: Memory): IntCode = runBlocking {
+internal fun runIntCode(memory: Memory): IntCode = runBlocking {
     val intCode = createIntCode(memory)
     intCode.run()
     intCode

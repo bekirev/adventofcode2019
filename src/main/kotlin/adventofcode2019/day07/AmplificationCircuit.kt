@@ -158,8 +158,7 @@ private suspend fun runAmplificationCircuit(
     }
 }
 
-
-class TwoSequentialInputProvider(private val first: InputProvider, private val second: InputProvider) : InputProvider {
+private class TwoSequentialInputProvider(private val first: InputProvider, private val second: InputProvider) : InputProvider {
     private val invokeCount = AtomicInteger(0)
     override suspend fun get(): IntCodeNumber {
         val count = invokeCount.getAndIncrement()
@@ -171,11 +170,11 @@ class TwoSequentialInputProvider(private val first: InputProvider, private val s
     }
 }
 
-interface QueueInputOutput : InputProvider, OutputConsumer {
+private interface QueueInputOutput : InputProvider, OutputConsumer {
     suspend fun put(value: IntCodeNumber): QueueInputOutput
 }
 
-class QueueInputOutputImpl(private val name: String = "") : QueueInputOutput {
+private class QueueInputOutputImpl(private val name: String = "") : QueueInputOutput {
     private val queue: Channel<IntCodeNumber> = Channel(Channel.UNLIMITED)
 
     override suspend fun get(): IntCodeNumber {

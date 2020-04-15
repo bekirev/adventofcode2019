@@ -28,7 +28,7 @@ private fun relationsFromInput(): Map<Object, Set<Object>> {
         )
 }
 
-fun OrbitMap.checksum(): Int {
+private fun OrbitMap.checksum(): Int {
     class ChecksumVisitor : DepthUniversalOrbitMapVisitor {
         var checksum = 0
             private set

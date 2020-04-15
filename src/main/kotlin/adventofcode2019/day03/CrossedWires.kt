@@ -29,7 +29,7 @@ fun findClosestIntersection(wirePathsA: String, wirePathsB: String): Pair<Point,
         .minBy { it.second }
 }
 
-fun lineToWires(line: String): List<Wire> {
+private fun lineToWires(line: String): List<Wire> {
     return line.split(",")
         .asSequence()
         .map(String::parseWirePath)
@@ -44,25 +44,25 @@ fun lineToWires(line: String): List<Wire> {
         }
 }
 
-enum class Direction {
+private enum class Direction {
     UP, RIGHT, DOWN, LEFT
 }
 
-enum class DirectionAxe {
+private enum class DirectionAxe {
     HORIZONTAL, VERTICAL
 }
 
-fun Direction.axe(): DirectionAxe = when (this) {
+private fun Direction.axe(): DirectionAxe = when (this) {
     Direction.UP, Direction.DOWN -> DirectionAxe.VERTICAL
     else -> DirectionAxe.HORIZONTAL
 }
 
-data class WirePath(
+private data class WirePath(
     val direction: Direction,
     val length: Int
 )
 
-fun String.parseWirePath(): WirePath {
+private fun String.parseWirePath(): WirePath {
     return WirePath(
         when (this[0]) {
             'U' -> Direction.UP
@@ -75,13 +75,13 @@ fun String.parseWirePath(): WirePath {
     )
 }
 
-data class Wire(val startPoint: Point, val wirePath: WirePath) {
+private data class Wire(val startPoint: Point, val wirePath: WirePath) {
     val endPoint: Point by lazy { startPoint.plus(wirePath) }
 }
 
 data class Point(val x: Int, val y: Int)
 
-fun Point.plus(wirePath: WirePath): Point {
+private fun Point.plus(wirePath: WirePath): Point {
     return when (wirePath.direction) {
         Direction.UP -> Point(x, y + wirePath.length)
         Direction.RIGHT -> Point(x + wirePath.length, y)
@@ -94,7 +94,7 @@ fun manhattanDistance(pointA: Point, pointB: Point): Int {
     return abs(pointA.x - pointB.x) + abs(pointA.y - pointB.y)
 }
 
-fun crossing(wireA: Wire, wireB: Wire): Crossing {
+private fun crossing(wireA: Wire, wireB: Wire): Crossing {
     fun crossing(crossPoint: Point, horRange: IntRange, verRange: IntRange): Crossing =
         if (horRange.contains(crossPoint.x) && verRange.contains(crossPoint.y)) Crossing.PointCrossing(crossPoint)
         else Crossing.NoCrossing
@@ -119,7 +119,7 @@ fun crossing(wireA: Wire, wireB: Wire): Crossing {
     }
 }
 
-fun Wire.toIntRange(): IntRange {
+private fun Wire.toIntRange(): IntRange {
     return when (wirePath.direction) {
         Direction.UP -> IntRange(startPoint.y, startPoint.y + wirePath.length)
         Direction.RIGHT -> IntRange(startPoint.x, startPoint.x + wirePath.length)
@@ -128,7 +128,7 @@ fun Wire.toIntRange(): IntRange {
     }
 }
 
-sealed class Crossing() {
+private sealed class Crossing() {
     object NoCrossing : Crossing()
     data class PointCrossing(val point: Point) : Crossing()
 }

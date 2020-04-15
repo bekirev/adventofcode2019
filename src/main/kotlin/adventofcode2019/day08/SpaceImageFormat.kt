@@ -32,7 +32,7 @@ private enum class Color {
     BLACK, WHITE, TRANSPARENT
 }
 
-data class Size(val width: Int, val height: Int) {
+private data class Size(val width: Int, val height: Int) {
     val pixelsCount: Int by lazy { width * height }
 }
 

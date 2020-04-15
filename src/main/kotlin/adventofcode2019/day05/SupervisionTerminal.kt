@@ -23,7 +23,7 @@ private fun createAndRunIntCode(memory: Memory, input: Int) {
     return createAndRunIntCode(memory, input, PrintlnOutputInstruction)
 }
 
-fun createAndRunIntCode(memory: Memory, input: Int, outputInstruction: Instruction) = runBlocking {
+internal fun createAndRunIntCode(memory: Memory, input: Int, outputInstruction: Instruction) = runBlocking {
     createIntCodeAllInstr(
         memory,
         InputInstruction(object : InputProvider {
