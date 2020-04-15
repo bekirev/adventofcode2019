@@ -6,7 +6,6 @@ import adventofcode2019.intcode.InputInstruction
 import adventofcode2019.intcode.InputProvider
 import adventofcode2019.intcode.IntCode
 import adventofcode2019.intcode.IntCodeNumber
-import adventofcode2019.intcode.IntCodeNumber.Companion
 import adventofcode2019.intcode.OutputConsumer
 import adventofcode2019.intcode.OutputInstruction
 import adventofcode2019.intcode.createIntCodeAllInstr
