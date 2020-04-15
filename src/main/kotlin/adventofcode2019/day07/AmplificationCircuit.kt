@@ -62,7 +62,6 @@ private fun findMaxThrusterSignal(
                 input
             )
         }
-        .onEach(::println)
         .maxBy { it.signal }!!
 }
 
@@ -97,7 +96,7 @@ internal fun runAmplificationCircuitWithFeedback(
     initialMemory: ArrayMemory,
     phaseSettings: PhaseSettings
 ): IntCodeNumber {
-    val aInput = OutputListenerQueueInputOutput(QueueInputOutputImpl("E->A"), ::println)
+    val aInput = QueueInputOutputImpl("E->A")
     return runAmplificationCircuit(initialMemory, phaseSettings, aInput, aInput)
 }
 
@@ -107,7 +106,6 @@ private fun runAmplificationCircuit(
     aInput: QueueInputOutput,
     eOutput: QueueInputOutput
 ): IntCodeNumber = runBlocking {
-    println(phaseSettings)
     runAmplificationCircuit(
         initialMemory,
         phaseSettings,
@@ -145,19 +143,17 @@ private suspend fun runAmplificationCircuit(
         )
     }
     return coroutineScope {
-        val job = launch {
-            val a = intCode(phaseSettings.a, aInput, aOutputBInput)
-            a.run()
-            val b = intCode(phaseSettings.b, aOutputBInput, bOutputCInput)
-            b.run()
-            val c = intCode(phaseSettings.c, bOutputCInput, cOutputDInput)
-            c.run()
-            val d = intCode(phaseSettings.d, cOutputDInput, dOutputEInput)
-            d.run()
-            val e = intCode(phaseSettings.e, dOutputEInput, eOutput)
-            e.run()
-        }
-        job.join()
+        val a = intCode(phaseSettings.a, aInput, aOutputBInput)
+        val b = intCode(phaseSettings.b, aOutputBInput, bOutputCInput)
+        val c = intCode(phaseSettings.c, bOutputCInput, cOutputDInput)
+        val d = intCode(phaseSettings.d, cOutputDInput, dOutputEInput)
+        val e = intCode(phaseSettings.e, dOutputEInput, eOutput)
+        launch { a.run() }
+        launch { b.run() }
+        launch { c.run() }
+        launch { d.run() }
+        val eJob = launch { e.run() }
+        eJob.join()
         eOutput.get()
     }
 }
@@ -193,15 +189,5 @@ class QueueInputOutputImpl(private val name: String = "") : QueueInputOutput {
     override suspend fun put(value: IntCodeNumber): QueueInputOutput {
         queue.send(value)
         return this
-    }
-}
-
-class OutputListenerQueueInputOutput(
-    private val queueInputOutput: QueueInputOutput,
-    private val outputListener: ((IntCodeNumber) -> Unit)
-) : QueueInputOutput by queueInputOutput {
-    override suspend fun consume(output: IntCodeNumber) {
-        outputListener(output)
-        queueInputOutput.consume(output)
     }
 }

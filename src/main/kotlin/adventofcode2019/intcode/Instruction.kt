@@ -16,14 +16,14 @@ interface Instruction {
 }
 
 private fun Parameter.resolveValue(intCodeState: IntCodeState): IntCodeNumber {
-    fun ComplexParameter.realValue(intCodeState: IntCodeState): IntCodeNumber = when (parameterMode) {
+    fun ComplexParameter.resolveValue(intCodeState: IntCodeState): IntCodeNumber = when (parameterMode) {
         POSITION_MODE -> intCodeState.memory[value.toInt()]
         IMMEDIATE_MODE -> value
         RELATIVE -> intCodeState.memory[intCodeState.relativeBase + value.toInt()]
     }
     return when (this) {
         is BasicParameter -> intCodeState.memory[value.toInt()]
-        is ComplexParameter -> realValue(intCodeState)
+        is ComplexParameter -> resolveValue(intCodeState)
     }
 }
 
