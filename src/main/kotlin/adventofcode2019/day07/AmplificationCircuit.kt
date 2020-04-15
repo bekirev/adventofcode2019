@@ -6,6 +6,7 @@ import adventofcode2019.intcode.InputInstruction
 import adventofcode2019.intcode.InputProvider
 import adventofcode2019.intcode.IntCode
 import adventofcode2019.intcode.IntCodeNumber
+import adventofcode2019.intcode.IntCodeNumber.Companion
 import adventofcode2019.intcode.OutputConsumer
 import adventofcode2019.intcode.OutputInstruction
 import adventofcode2019.intcode.createIntCodeAllInstr
@@ -18,20 +19,11 @@ import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicInteger
 
 fun main() {
-    println(
-        findMaxThrusterSignal(
-            ArrayMemory.fromList(
-                getIntCodeInput(Paths.get("adventofcode2019", "day07", "input.txt")).toList()
-            )
-        )
+    val initialMemory = ArrayMemory.fromList(
+        getIntCodeInput(Paths.get("adventofcode2019", "day07", "input.txt")).toList()
     )
-    println(
-        findMaxThrusterSignalWithFeedback(
-            ArrayMemory.fromList(
-                getIntCodeInput(Paths.get("adventofcode2019", "day07", "input.txt")).toList()
-            )
-        )
-    )
+    println(findMaxThrusterSignal(initialMemory.copyOf()))
+    println(findMaxThrusterSignalWithFeedback(initialMemory.copyOf()))
 }
 
 data class ThrusterSignalResult(
@@ -94,10 +86,18 @@ private fun phases(phaseRange: IntRange): Sequence<PhaseSettings> = sequence {
 }
 
 internal fun runAmplificationCircuit(initialMemory: ArrayMemory, phaseSettings: PhaseSettings): IntCodeNumber {
-    return runAmplificationCircuit(initialMemory, phaseSettings, QueueInputOutputImpl("->A"), QueueInputOutputImpl("E->"))
+    return runAmplificationCircuit(
+        initialMemory,
+        phaseSettings,
+        QueueInputOutputImpl("->A"),
+        QueueInputOutputImpl("E->")
+    )
 }
 
-internal fun runAmplificationCircuitWithFeedback(initialMemory: ArrayMemory, phaseSettings: PhaseSettings): IntCodeNumber {
+internal fun runAmplificationCircuitWithFeedback(
+    initialMemory: ArrayMemory,
+    phaseSettings: PhaseSettings
+): IntCodeNumber {
     val aInput = OutputListenerQueueInputOutput(QueueInputOutputImpl("E->A"), ::println)
     return runAmplificationCircuit(initialMemory, phaseSettings, aInput, aInput)
 }
@@ -186,9 +186,11 @@ class QueueInputOutputImpl(private val name: String = "") : QueueInputOutput {
     override suspend fun get(): IntCodeNumber {
         return queue.receive()
     }
+
     override suspend fun consume(output: IntCodeNumber) {
         queue.send(output)
     }
+
     override suspend fun put(value: IntCodeNumber): QueueInputOutput {
         queue.send(value)
         return this
