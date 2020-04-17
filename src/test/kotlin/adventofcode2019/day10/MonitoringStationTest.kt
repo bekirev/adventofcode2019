@@ -1,5 +1,6 @@
 package adventofcode2019.day10
 
+import adventofcode2019.grid.Position
 import org.junit.Assert
 import org.junit.Test
 
@@ -11,7 +12,7 @@ class MonitoringStationTest {
 #####
 ....#
 ...##""".lineSequence().input()
-        Assert.assertEquals(ObservationPosition(Position(3,4), 8), map.bestObservationPosition())
+        Assert.assertEquals(ObservationPosition(Position(3, 4), 8), map.bestObservationPosition())
     }
 
     @Test
@@ -26,7 +27,7 @@ class MonitoringStationTest {
 .##.#..###
 ##...#..#.
 .#....####""".lineSequence().input()
-        Assert.assertEquals(ObservationPosition(Position(5,8), 33), map.bestObservationPosition())
+        Assert.assertEquals(ObservationPosition(Position(5, 8), 33), map.bestObservationPosition())
     }
 
     @Test
@@ -41,7 +42,7 @@ class MonitoringStationTest {
 ..##....##
 ......#...
 .####.###.""".lineSequence().input()
-        Assert.assertEquals(ObservationPosition(Position(1,2), 35), map.bestObservationPosition())
+        Assert.assertEquals(ObservationPosition(Position(1, 2), 35), map.bestObservationPosition())
     }
 
     @Test
@@ -56,7 +57,7 @@ class MonitoringStationTest {
 #..#.#.###
 .##...##.#
 .....#.#..""".lineSequence().input()
-        Assert.assertEquals(ObservationPosition(Position(6,3), 41), map.bestObservationPosition())
+        Assert.assertEquals(ObservationPosition(Position(6, 3), 41), map.bestObservationPosition())
     }
 
     @Test
@@ -81,7 +82,7 @@ class MonitoringStationTest {
 .#.#.###########.###
 #.#.#.#####.####.###
 ###.##.####.##.#..##""".lineSequence().input()
-        Assert.assertEquals(ObservationPosition(Position(11,13), 210), map.bestObservationPosition())
+        Assert.assertEquals(ObservationPosition(Position(11, 13), 210), map.bestObservationPosition())
     }
 
     @Test
