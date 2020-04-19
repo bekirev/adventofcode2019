@@ -1,6 +1,5 @@
 package adventofcode2019.intcode
 
-import java.lang.NumberFormatException
 import java.math.BigInteger
 
 class IntCodeNumber private constructor(private val value: BigInteger): Comparable<IntCodeNumber> {
