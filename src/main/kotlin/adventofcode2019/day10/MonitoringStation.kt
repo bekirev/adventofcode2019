@@ -42,11 +42,11 @@ fun Grid<PositionState>.bestObservationPosition(): ObservationPosition {
 data class ObservationPosition(val position: Position, val visibleAsteroidsCount: Int)
 
 private fun Grid<PositionState>.laserVaporizationSequence(position: Position): Sequence<VisibleAsteroid> = sequence {
-    var asteroidMap: Grid<PositionState> = this@laserVaporizationSequence
+    val asteroidMap: Grid<PositionState> = this@laserVaporizationSequence
     var asteroids: List<VisibleAsteroid> = emptyList()
     val iteration = {
         asteroids = visibleAsteroids(asteroidMap, position).sortedBy(VisibleAsteroid::angle).toList()
-        asteroidMap = asteroidMap.withElements(
+        asteroidMap.changeElements(
             asteroids.asSequence()
                 .map(VisibleAsteroid::position)
                 .map { pos -> pos to EMPTY }

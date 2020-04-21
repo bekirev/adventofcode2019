@@ -49,10 +49,8 @@ class ArrayGrid<T> private constructor(
 
     override operator fun get(position: Position): T = rows[position.y.yToArrayIndex()][position.x.xToArrayIndex()]
 
-    override fun withElements(redefine: Sequence<Pair<Position, T>>): ArrayGrid<T> {
-        val copy = copyOf()
-        redefine.forEach { (pos, state) -> copy.rows[pos.y.yToArrayIndex()][pos.x.xToArrayIndex()] = state }
-        return copy
+    override fun changeElements(elements: Sequence<Pair<Position, T>>) {
+        elements.forEach { (pos, state) -> rows[pos.y.yToArrayIndex()][pos.x.xToArrayIndex()] = state }
     }
 
     private fun copyOf(): ArrayGrid<T> {

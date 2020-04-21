@@ -33,8 +33,9 @@ private fun createAndRunRobotOnColor(firstPlateColor: Color): RobotWorkResult {
         val robotJob = launch { robot.run() }
         var robotPosition = Position(0, 0)
         var robotDirection = UP
-        var grid: ArrayGrid<Color> = ArrayGrid.withBounds(Bounds(-65, 45, -20, 55)) { BLACK }
-            .withElements(sequenceOf(robotPosition to firstPlateColor))
+        val grid: ArrayGrid<Color> = ArrayGrid.withBounds(Bounds(-65, 45, -20, 55)) { BLACK }.apply {
+            changeElements(sequenceOf(robotPosition to firstPlateColor))
+        }
         val paintedPlatesPositions: MutableSet<Position> = HashSet()
         val moveRobotJob = launch {
             while (isActive) {
@@ -42,7 +43,7 @@ private fun createAndRunRobotOnColor(firstPlateColor: Color): RobotWorkResult {
                 robot.panelColor(originalPlateColor)
                 val (paintColor, turnDirection) = robot.output()
                 paintedPlatesPositions.add(robotPosition)
-                grid = grid.withElements(sequenceOf(robotPosition to paintColor))
+                grid.changeElements(sequenceOf(robotPosition to paintColor))
                 robotDirection = robotDirection.turn(turnDirection)
                 robotPosition += robotDirection.angle
             }

@@ -6,8 +6,8 @@ import kotlin.streams.asSequence
 
 fun createIntCodeAllInstr(
     memory: Memory,
-    inputInstruction: Instruction,
-    outputInstruction: Instruction
+    inputInstruction: Instruction = ReadLineInputInstruction,
+    outputInstruction: Instruction = PrintlnOutputInstruction
 ): IntCode {
     return IntCode(
         memory,
