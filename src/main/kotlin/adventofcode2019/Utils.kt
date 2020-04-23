@@ -5,6 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Stream
+import kotlin.math.absoluteValue
 import kotlin.math.log10
 
 object PathFinder {
@@ -61,7 +62,7 @@ fun Int.pow(n: Int): Int {
 }
 
 fun Int.getDigitAt(index: Int): Int {
-    return (this % 10.pow(index + 1) - this % 10.pow(index)) / 10.pow(index)
+    return (this % 10.pow(index + 1) - this % 10.pow(index)).absoluteValue / 10.pow(index)
 }
 
 fun Int.first(n: Int): Int {

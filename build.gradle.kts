@@ -16,6 +16,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.3.5")
     implementation("org.scala-lang", "scala-library", "2.13.1")
+    implementation("com.google.guava", "guava", "29.0-jre")
     testCompile("org.scalatest", "scalatest_2.13", "3.1.1")
     testCompile("junit", "junit", "4.12")
 }
