@@ -2,6 +2,7 @@ package adventofcode2019.day07
 
 import adventofcode2019.intcode.ArrayMemory
 import adventofcode2019.intcode.ArrayMemory.Companion.copyOf
+import adventofcode2019.intcode.ConstantInputProvider
 import adventofcode2019.intcode.InputInstruction
 import adventofcode2019.intcode.InputProvider
 import adventofcode2019.intcode.IntCode
@@ -133,9 +134,7 @@ private suspend fun runAmplificationCircuit(
             initialMemory.copyOf(),
             InputInstruction(
                 TwoSequentialInputProvider(
-                    object : InputProvider {
-                        override suspend fun get(): IntCodeNumber = IntCodeNumber.fromInt(phase)
-                    },
+                    ConstantInputProvider(IntCodeNumber.fromInt(phase)),
                     input
                 )
             ),

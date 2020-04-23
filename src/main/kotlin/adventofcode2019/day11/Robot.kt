@@ -6,11 +6,11 @@ import adventofcode2019.day11.TurnDirection.LEFT
 import adventofcode2019.day11.TurnDirection.RIGHT
 import adventofcode2019.intcode.AdditionalMapMemory
 import adventofcode2019.intcode.ArrayMemory
+import adventofcode2019.intcode.ChannelInputProvider
+import adventofcode2019.intcode.ChannelOutputConsumer
 import adventofcode2019.intcode.InputInstruction
-import adventofcode2019.intcode.InputProvider
 import adventofcode2019.intcode.IntCode
 import adventofcode2019.intcode.IntCodeNumber
-import adventofcode2019.intcode.OutputConsumer
 import adventofcode2019.intcode.OutputInstruction
 import adventofcode2019.intcode.createIntCodeAllInstr
 import kotlinx.coroutines.channels.Channel
@@ -26,20 +26,8 @@ class Robot private constructor(
             val outputChannel = Channel<IntCodeNumber>(Channel.UNLIMITED)
             val intCode = createIntCodeAllInstr(
                 AdditionalMapMemory.fromMemory(ArrayMemory.fromSequence(memorySeq)),
-                InputInstruction(
-                    object : InputProvider {
-                        override suspend fun get(): IntCodeNumber {
-                            return inputChannel.receive()
-                        }
-                    }
-                ),
-                OutputInstruction(
-                    object : OutputConsumer {
-                        override suspend fun consume(output: IntCodeNumber) {
-                            outputChannel.send(output)
-                        }
-                    }
-                )
+                InputInstruction(ChannelInputProvider(inputChannel)),
+                OutputInstruction(ChannelOutputConsumer(outputChannel))
             )
             return Robot(intCode, inputChannel, outputChannel)
         }

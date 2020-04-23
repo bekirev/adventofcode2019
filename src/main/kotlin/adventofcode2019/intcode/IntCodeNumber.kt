@@ -6,6 +6,7 @@ class IntCodeNumber private constructor(private val value: BigInteger): Comparab
     companion object {
         val ZERO = IntCodeNumber(BigInteger.ZERO)
         val ONE = IntCodeNumber(BigInteger.ONE)
+        val TWO = IntCodeNumber(BigInteger.TWO)
 
         fun fromInt(value: Int): IntCodeNumber {
             return IntCodeNumber(BigInteger.valueOf(value.toLong()))

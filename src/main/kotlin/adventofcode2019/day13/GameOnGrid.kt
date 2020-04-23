@@ -9,12 +9,12 @@ import adventofcode2019.grid.ArrayGrid
 import adventofcode2019.grid.Bounds
 import adventofcode2019.grid.Position
 import adventofcode2019.intcode.AdditionalMapMemory
+import adventofcode2019.intcode.ChannelInputProvider
+import adventofcode2019.intcode.ChannelOutputConsumer
 import adventofcode2019.intcode.InputInstruction
-import adventofcode2019.intcode.InputProvider
 import adventofcode2019.intcode.IntCode
 import adventofcode2019.intcode.IntCodeNumber
 import adventofcode2019.intcode.Memory
-import adventofcode2019.intcode.OutputConsumer
 import adventofcode2019.intcode.OutputInstruction
 import adventofcode2019.intcode.createIntCodeAllInstr
 import kotlinx.coroutines.cancelAndJoin
@@ -49,20 +49,8 @@ class GameOnGrid private constructor(
             return GameOnGrid(
                 createIntCodeAllInstr(
                     AdditionalMapMemory.fromMemory(memory),
-                    inputInstruction = InputInstruction(
-                        object : InputProvider {
-                            override suspend fun get(): IntCodeNumber {
-                                return gameInputChannel.receive()
-                            }
-                        }
-                    ),
-                    outputInstruction = OutputInstruction(
-                        object : OutputConsumer {
-                            override suspend fun consume(output: IntCodeNumber) {
-                                gameOutputChannel.send(output)
-                            }
-                        }
-                    )
+                    InputInstruction(ChannelInputProvider(gameInputChannel)),
+                    OutputInstruction(ChannelOutputConsumer(gameOutputChannel))
                 ),
                 gameInputChannel,
                 gameOutputChannel,

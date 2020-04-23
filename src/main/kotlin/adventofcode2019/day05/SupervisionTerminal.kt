@@ -2,8 +2,8 @@ package adventofcode2019.day05
 
 import adventofcode2019.intcode.ArrayMemory
 import adventofcode2019.intcode.ArrayMemory.Companion.copyOf
+import adventofcode2019.intcode.ConstantInputProvider
 import adventofcode2019.intcode.InputInstruction
-import adventofcode2019.intcode.InputProvider
 import adventofcode2019.intcode.Instruction
 import adventofcode2019.intcode.IntCodeNumber
 import adventofcode2019.intcode.Memory
@@ -26,9 +26,7 @@ private fun createAndRunIntCode(memory: Memory, input: Int) {
 internal fun createAndRunIntCode(memory: Memory, input: Int, outputInstruction: Instruction) = runBlocking {
     createIntCodeAllInstr(
         memory,
-        InputInstruction(object : InputProvider {
-            override suspend fun get(): IntCodeNumber = IntCodeNumber.fromInt(input)
-        }),
+        InputInstruction(ConstantInputProvider(IntCodeNumber.fromInt(input))),
         outputInstruction
     ).run()
 }

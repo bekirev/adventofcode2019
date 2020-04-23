@@ -1,6 +1,7 @@
 package adventofcode2019.intcode
 
 import adventofcode2019.linesFromResource
+import kotlinx.coroutines.channels.Channel
 import java.nio.file.Path
 import kotlin.streams.asSequence
 
@@ -39,4 +40,48 @@ fun getIntCodeInput(path: Path): Sequence<IntCodeNumber> {
                 .map { str -> IntCodeNumber.fromString(str) }
                 .filterNotNull()
         }
+}
+
+class ChannelInputProvider(private val channel: Channel<IntCodeNumber>) : InputProvider {
+    override suspend fun get(): IntCodeNumber = channel.receive()
+}
+
+class ChannelOutputConsumer(private val channel: Channel<IntCodeNumber>) : OutputConsumer {
+    override suspend fun consume(output: IntCodeNumber) = channel.send(output)
+}
+
+class ConstantInputProvider(private val value: IntCodeNumber) : InputProvider {
+    override suspend fun get(): IntCodeNumber = value
+}
+
+interface SendBus<in T> {
+    suspend fun send(value: T)
+}
+
+interface ReceiveBus<out T> {
+    suspend fun receive(): T
+}
+
+interface MonoBus<T> : SendBus<T>, ReceiveBus<T>
+
+class TransformingInputProvider<T>(
+    private val bus: MonoBus<IntCodeNumber>,
+    private val transformation: (T) -> IntCodeNumber
+) : SendBus<T>, InputProvider {
+    override suspend fun send(value: T) = bus.send(transformation(value))
+    override suspend fun get(): IntCodeNumber = bus.receive()
+}
+
+class TransformingOutputConsumer<T>(
+    private val bus: MonoBus<IntCodeNumber>,
+    private val transformation: (IntCodeNumber) -> T
+) : ReceiveBus<T>, OutputConsumer {
+    override suspend fun receive(): T = transformation(bus.receive())
+    override suspend fun consume(output: IntCodeNumber) = bus.send(output)
+}
+
+class ChannelMonoBus<T>(private val channel: Channel<T>) : MonoBus<T> {
+    override suspend fun send(value: T) = channel.send(value)
+
+    override suspend fun receive(): T = channel.receive()
 }

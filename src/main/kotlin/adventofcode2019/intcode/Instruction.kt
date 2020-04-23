@@ -1,14 +1,13 @@
 package adventofcode2019.intcode
 
 import adventofcode2019.intcode.IntCodeNumber.Companion
-import adventofcode2019.intcode.Parameter.ComplexParameter
 import adventofcode2019.intcode.Parameter.BasicParameter
+import adventofcode2019.intcode.Parameter.ComplexParameter
 import adventofcode2019.intcode.ParameterMode.IMMEDIATE_MODE
 import adventofcode2019.intcode.ParameterMode.POSITION_MODE
 import adventofcode2019.intcode.ParameterMode.RELATIVE
 import adventofcode2019.intcode.State.HALTED
 import adventofcode2019.intcode.State.RUNNING
-import kotlin.IllegalArgumentException
 
 interface Instruction {
     fun paramsCount(): Int
@@ -50,7 +49,8 @@ object HaltInstruction : Instruction {
 object AddInstruction : Instruction {
     override fun paramsCount(): Int = 3
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
-        intCodeState.memory[params[2].resolveReference(intCodeState)] = params[0].resolveValue(intCodeState) + params[1].resolveValue(intCodeState)
+        intCodeState.memory[params[2].resolveReference(intCodeState)] =
+            params[0].resolveValue(intCodeState) + params[1].resolveValue(intCodeState)
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }
@@ -59,7 +59,8 @@ object AddInstruction : Instruction {
 object MultiplyInstruction : Instruction {
     override fun paramsCount(): Int = 3
     override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) {
-        intCodeState.memory[params[2].resolveReference(intCodeState)] = params[0].resolveValue(intCodeState) * params[1].resolveValue(intCodeState)
+        intCodeState.memory[params[2].resolveReference(intCodeState)] =
+            params[0].resolveValue(intCodeState) * params[1].resolveValue(intCodeState)
         intCodeState.state = RUNNING
         intCodeState.position += paramsCount() + 1
     }
@@ -75,7 +76,8 @@ object ReadLineInputInstruction : Instruction {
     })
 
     override fun paramsCount(): Int = inputInstruction.paramsCount()
-    override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) = inputInstruction.execute(intCodeState, params)
+    override suspend fun execute(intCodeState: IntCodeState, params: InstructionParameters) =
+        inputInstruction.execute(intCodeState, params)
 }
 
 class InputInstruction(private val inputProvider: InputProvider) : Instruction {
@@ -94,9 +96,11 @@ interface InputProvider {
 }
 
 object PrintlnOutputInstruction : Instruction {
-    private val outputInstruction: Instruction = OutputInstruction(object : OutputConsumer {
-        override suspend fun consume(output: IntCodeNumber) = println(output)
-    })
+    private val outputInstruction: Instruction = OutputInstruction(
+        object : OutputConsumer {
+            override suspend fun consume(output: IntCodeNumber) = println(output)
+        }
+    )
 
     override fun paramsCount(): Int = outputInstruction.paramsCount()
 
