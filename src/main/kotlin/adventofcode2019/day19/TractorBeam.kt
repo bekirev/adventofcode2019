@@ -7,7 +7,6 @@ import adventofcode2019.grid.Position
 import adventofcode2019.intcode.AdditionalMapMemory
 import adventofcode2019.intcode.ArrayMemory
 import adventofcode2019.intcode.ArrayMemory.Companion.copyOf
-import adventofcode2019.intcode.ChannelMonoBus
 import adventofcode2019.intcode.InputInstruction
 import adventofcode2019.intcode.IntCode
 import adventofcode2019.intcode.IntCodeNumber
@@ -17,6 +16,7 @@ import adventofcode2019.intcode.ReceiveBus
 import adventofcode2019.intcode.SendBus
 import adventofcode2019.intcode.TransformingInputProvider
 import adventofcode2019.intcode.TransformingOutputConsumer
+import adventofcode2019.intcode.asMonoBus
 import adventofcode2019.intcode.createIntCodeAllInstr
 import adventofcode2019.intcode.intCodeInput
 import kotlinx.coroutines.channels.Channel
@@ -66,10 +66,10 @@ private class Drones(private val memory: ArrayMemory) : SpaceScanner {
             companion object {
                 fun fromMemory(memory: Memory): Drone {
                     val transformingInputProvider = TransformingInputProvider<Int>(
-                        ChannelMonoBus(Channel())
+                        Channel<IntCodeNumber>().asMonoBus()
                     ) { IntCodeNumber.fromInt(it) }
                     val transformingOutputConsumer = TransformingOutputConsumer(
-                        ChannelMonoBus(Channel()),
+                        Channel<IntCodeNumber>().asMonoBus(),
                         IntCodeNumber::toCellState
                     )
                     return Drone(

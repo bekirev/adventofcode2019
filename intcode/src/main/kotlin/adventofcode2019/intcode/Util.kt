@@ -82,6 +82,7 @@ class TransformingOutputConsumer<T>(
 
 class ChannelMonoBus<T>(private val channel: Channel<T>) : MonoBus<T> {
     override suspend fun send(value: T) = channel.send(value)
-
     override suspend fun receive(): T = channel.receive()
 }
+
+fun <T> Channel<T>.asMonoBus(): ChannelMonoBus<T> = ChannelMonoBus(this)
