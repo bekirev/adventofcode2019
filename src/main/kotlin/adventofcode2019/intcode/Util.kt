@@ -31,8 +31,8 @@ fun createIntCodeAllInstr(
     )
 }
 
-fun getIntCodeInput(path: Path): Sequence<IntCodeNumber> {
-    return linesFromResource(path)
+fun Path.intCodeInput(): Sequence<IntCodeNumber> {
+    return linesFromResource()
         .asSequence()
         .flatMap {
             it.split(",").asSequence()

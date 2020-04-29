@@ -10,7 +10,7 @@ import adventofcode2019.intcode.IntCodeNumber
 import adventofcode2019.intcode.OutputConsumer
 import adventofcode2019.intcode.OutputInstruction
 import adventofcode2019.intcode.createIntCodeAllInstr
-import adventofcode2019.intcode.getIntCodeInput
+import adventofcode2019.intcode.intCodeInput
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -20,7 +20,9 @@ import java.util.concurrent.atomic.AtomicInteger
 
 fun main() {
     val initialMemory = ArrayMemory.fromList(
-        getIntCodeInput(Paths.get("adventofcode2019", "day07", "input.txt")).toList()
+        Paths.get("adventofcode2019", "day07", "input.txt")
+            .intCodeInput()
+            .toList()
     )
     println(findMaxThrusterSignal(initialMemory.copyOf()))
     println(findMaxThrusterSignalWithFeedback(initialMemory.copyOf()))

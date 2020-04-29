@@ -14,9 +14,10 @@ import kotlin.streams.asSequence
 
 fun main() {
     fun getInput(): Grid<PositionState> {
-        return linesFromResource(Paths.get("adventofcode2019", "day10", "input.txt"))
+        return Paths.get("adventofcode2019", "day10", "input.txt")
+            .linesFromResource()
             .asSequence()
-            .input()
+            .asGrid()
     }
     val asteroidMap = getInput()
     val observationPosition = asteroidMap.bestObservationPosition()
@@ -98,7 +99,7 @@ enum class PositionState {
     EMPTY, ASTEROID
 }
 
-internal fun Sequence<String>.input(): Grid<PositionState> {
+internal fun Sequence<String>.asGrid(): Grid<PositionState> {
     fun Char.toPositionState(): PositionState = when (this) {
         '.' -> EMPTY
         '#' -> ASTEROID

@@ -10,7 +10,7 @@ import adventofcode2019.grid.Angle
 import adventofcode2019.grid.ArrayGrid
 import adventofcode2019.grid.Bounds
 import adventofcode2019.grid.Position
-import adventofcode2019.intcode.getIntCodeInput
+import adventofcode2019.intcode.intCodeInput
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -29,7 +29,10 @@ fun main() {
 
 private fun createAndRunRobotOnColor(firstPlateColor: Color): RobotWorkResult {
     return runBlocking {
-        val robot = Robot.fromMemory(getIntCodeInput(Paths.get("adventofcode2019", "day11", "input.txt")))
+        val robot = Robot.fromMemory(
+            Paths.get("adventofcode2019", "day11", "input.txt")
+                .intCodeInput()
+        )
         val robotJob = launch { robot.run() }
         var robotPosition = Position(0, 0)
         var robotDirection = UP

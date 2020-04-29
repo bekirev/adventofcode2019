@@ -18,7 +18,7 @@ import adventofcode2019.intcode.SendBus
 import adventofcode2019.intcode.TransformingInputProvider
 import adventofcode2019.intcode.TransformingOutputConsumer
 import adventofcode2019.intcode.createIntCodeAllInstr
-import adventofcode2019.intcode.getIntCodeInput
+import adventofcode2019.intcode.intCodeInput
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -28,7 +28,8 @@ fun main() {
     val spaceScanner = CachingSpaceScanner(
         Drones(
             ArrayMemory.fromSequence(
-                getIntCodeInput(Paths.get("adventofcode2019", "day19", "input.txt"))
+                Paths.get("adventofcode2019", "day19", "input.txt")
+                    .intCodeInput()
             )
         )
     )

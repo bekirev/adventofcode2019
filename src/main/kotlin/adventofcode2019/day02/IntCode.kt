@@ -11,12 +11,15 @@ import adventofcode2019.intcode.IntCodeNumber
 import adventofcode2019.intcode.MapInstructionReader
 import adventofcode2019.intcode.Memory
 import adventofcode2019.intcode.MultiplyInstruction
-import adventofcode2019.intcode.getIntCodeInput
+import adventofcode2019.intcode.intCodeInput
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Paths
 
 fun main() {
-    val memory = ArrayMemory.fromSequence(getIntCodeInput(Paths.get("adventofcode2019", "day02", "input.txt")))
+    val memory = ArrayMemory.fromSequence(
+        Paths.get("adventofcode2019", "day02", "input.txt")
+            .intCodeInput()
+    )
     println(initMemoryAndRunIntCode(memory.copyOf(), 12, 2).memoryAt(0))
     loop@ for (noun in 0..99) {
         for (verb in 0..99) {

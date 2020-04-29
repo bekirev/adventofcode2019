@@ -7,7 +7,8 @@ import kotlin.streams.asSequence
 
 fun main() {
     val factory = NanoFactory.fromSequence(
-        linesFromResource(Paths.get("adventofcode2019", "day14", "input.txt"))
+        Paths.get("adventofcode2019", "day14", "input.txt")
+            .linesFromResource()
             .asSequence()
             .map(String::toReaction)
     )

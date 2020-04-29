@@ -9,7 +9,9 @@ import kotlin.streams.toList
 private val ZERO_POINT = Point(0, 0)
 
 fun main() {
-    val input = linesFromResource(Paths.get("adventofcode2019", "day03", "input.txt")).toList()
+    val input = Paths.get("adventofcode2019", "day03", "input.txt")
+        .linesFromResource()
+        .toList()
     val res = findClosestIntersection(input[0], input[1])
     if (res != null) {
         val (point, distance) = res

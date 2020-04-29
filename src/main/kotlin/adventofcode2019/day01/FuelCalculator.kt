@@ -3,6 +3,7 @@ package adventofcode2019.day01
 import adventofcode2019.linesFromResource
 import adventofcode2019.sum
 import java.nio.file.Paths
+import java.util.stream.Stream
 import kotlin.math.max
 
 fun main() {
@@ -19,14 +20,11 @@ fun main() {
     )
 }
 
-private fun getInput() = linesFromResource(
-    Paths.get(
-        "adventofcode2019",
-        "day01",
-        "input.txt"
-    )
-)
-    .map(String::toLong)
+private fun getInput(): Stream<Long> {
+    return Paths.get("adventofcode2019", "day01", "input.txt")
+        .linesFromResource()
+        .map(String::toLong)
+}
 
 private fun requiredFuelByMass(mass: Long): Long = max(0, mass / 3 - 2)
 

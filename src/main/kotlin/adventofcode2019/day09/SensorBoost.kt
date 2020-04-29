@@ -10,12 +10,15 @@ import adventofcode2019.intcode.IntCodeNumber
 import adventofcode2019.intcode.Memory
 import adventofcode2019.intcode.PrintlnOutputInstruction
 import adventofcode2019.intcode.createIntCodeAllInstr
-import adventofcode2019.intcode.getIntCodeInput
+import adventofcode2019.intcode.intCodeInput
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Paths
 
 fun main() {
-    val program = ArrayMemory.fromSequence(getIntCodeInput(Paths.get("adventofcode2019", "day09", "input.txt")))
+    val program = ArrayMemory.fromSequence(
+        Paths.get("adventofcode2019", "day09", "input.txt")
+            .intCodeInput()
+    )
     val intCodeFirstPart = intCode(program.copyOf(), IntCodeNumber.ONE)
     val intCodeSecondPart = intCode(program, IntCodeNumber.fromInt(2))
     runBlocking {

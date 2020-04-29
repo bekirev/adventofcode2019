@@ -9,43 +9,36 @@ import kotlin.math.absoluteValue
 import kotlin.math.log10
 
 object PathFinder {
-    private fun uriFromResources(strPath: String): URI = javaClass.classLoader.getResource(strPath).toURI()
+    private fun uriFromResources(strPath: String): URI {
+        return javaClass.classLoader.getResource(strPath)?.toURI() ?: throw error("Resource not found: $strPath")
+    }
 
-    fun fromResources(strPath: String): Path = Paths.get(
-        uriFromResources(
-            strPath
+    fun fromResources(strPath: String): Path {
+        return Paths.get(
+            uriFromResources(
+                strPath
+            )
         )
-    )
+    }
 }
 
-fun linesFromResource(strPath: String): Stream<String> =
-    Files.lines(PathFinder.fromResources(strPath))!!
+private fun String.linesFromResource(): Stream<String> = Files.lines(PathFinder.fromResources(this))!!
 
-fun linesFromResource(path: Path): Stream<String> =
-    linesFromResource(path.toString())
-
-fun longLinesStream(inputPath1: Path): Stream<List<Long>> {
-    return linesFromResource(inputPath1)
-        .map { line ->
-            line
-                .split("\t")
-                .map(String::toLong)
-        }
-}
+fun Path.linesFromResource(): Stream<String> = this.toString().linesFromResource()
 
 fun Stream<Long>.sum(): Long {
-    return reduce<Long>(
-        0,
+    return reduce(
+        0L,
         { acc, value -> acc + value },
         { acc1, acc2 -> acc1 + acc2 }
-    ) ?: 0
+    ) ?: 0L
 }
 
 fun Stream<String>.concat(): String {
-    return reduce<StringBuilder>(
+    return reduce(
         StringBuilder(),
-        {acc, value -> acc.append(value) },
-        {acc1, acc2 -> acc1.append(acc2) }
+        { acc, value -> acc.append(value) },
+        { acc1, acc2 -> acc1.append(acc2) }
     ).toString()
 }
 

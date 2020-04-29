@@ -11,7 +11,8 @@ fun main() {
 }
 
 private fun relationsFromInput(): Map<Object, Set<Object>> {
-    return linesFromResource(Paths.get("adventofcode2019", "day06", "input.txt"))
+    return Paths.get("adventofcode2019", "day06", "input.txt")
+        .linesFromResource()
         .map { line ->
             line.split(")").let { splitRes ->
                 Object(splitRes[0]) to Object(splitRes[1])

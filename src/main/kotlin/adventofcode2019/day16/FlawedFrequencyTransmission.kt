@@ -12,7 +12,8 @@ import kotlin.streams.asStream
 
 fun main() {
     val pattern = arrayOf(0, 1, 0, -1).toIntArray()
-    val inputPart1 = linesFromResource(Paths.get("adventofcode2019", "day16", "input.txt"))
+    val inputPart1 = Paths.get("adventofcode2019", "day16", "input.txt")
+        .linesFromResource()
         .asSequence()
         .joinToString("")
         .map(Character::getNumericValue)

@@ -13,14 +13,15 @@ import adventofcode2019.grid.Grid
 import adventofcode2019.grid.Position
 import adventofcode2019.intcode.AdditionalMapMemory
 import adventofcode2019.intcode.ArrayMemory
-import adventofcode2019.intcode.getIntCodeInput
+import adventofcode2019.intcode.intCodeInput
 import java.nio.file.Paths
 
 fun main() {
     val (map, movesToOxygenSystem) = RepairDroid.fromMemory(
         AdditionalMapMemory.fromMemory(
             ArrayMemory.fromSequence(
-                getIntCodeInput(Paths.get("adventofcode2019", "day15", "input.txt"))
+                Paths.get("adventofcode2019", "day15", "input.txt")
+                    .intCodeInput()
             )
         )
     ).buildMap()

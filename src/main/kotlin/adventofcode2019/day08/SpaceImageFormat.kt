@@ -137,7 +137,8 @@ private fun getInput(): Sequence<Color> {
         else -> throw IllegalArgumentException("Unknown color code $this")
     }
 
-    return linesFromResource(Paths.get("adventofcode2019", "day08", "input.txt"))
+    return Paths.get("adventofcode2019", "day08", "input.txt")
+        .linesFromResource()
         .asSequence()
         .flatMap(String::asSequence)
         .map(Char::toColor)
