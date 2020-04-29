@@ -25,7 +25,6 @@ fun main() {
 
 fun searchMaxArg(baseArg: BigInteger, maxValue: BigInteger, function: (BigInteger) -> BigInteger): BigInteger {
     tailrec fun findRange(baseArg: BigInteger, baseValue: BigInteger): Pair<BigInteger, BigInteger> {
-        println("Range: $baseArg")
         return if (baseValue < maxValue) {
             val rightArg = baseArg * BigInteger.TWO
             val rightValue = function(rightArg)
@@ -46,7 +45,6 @@ fun searchMaxArg(baseArg: BigInteger, maxValue: BigInteger, function: (BigIntege
     }
 
     tailrec fun findMaxArg(leftArg: BigInteger, rightArg: BigInteger): BigInteger {
-        println("Range: $leftArg, $rightArg")
         return if (rightArg - leftArg <= BigInteger.TWO) {
             if (function(rightArg) == maxValue) {
                 rightArg
@@ -160,7 +158,7 @@ class NanoFactory private constructor(private val reactions: Map<Chemical, Chemi
     }
 }
 
-data class Chemical(val name: String)
+inline class Chemical(val name: String)
 
 val ORE = Chemical("ORE")
 

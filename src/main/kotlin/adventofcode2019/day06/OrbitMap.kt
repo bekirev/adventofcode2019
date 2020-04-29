@@ -2,7 +2,7 @@ package adventofcode2019.day06
 
 import java.util.LinkedList
 
-data class Object(val id: String)
+inline class Object(val id: String)
 
 class OrbitMap private constructor(private val root: Node) {
     companion object {

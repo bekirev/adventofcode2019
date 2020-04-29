@@ -70,8 +70,6 @@ private class System(private val bodies: Set<Body>) {
         )
     }
 
-//    }
-
     override fun toString(): String {
         return "System(bodies=[${lineSeparator()}${bodies.joinToString(lineSeparator())}${lineSeparator()}])"
     }
@@ -93,7 +91,6 @@ private class System(private val bodies: Set<Body>) {
 }
 
 private data class Body(
-//    val name: String,
     val position: Position,
     val velocity: Velocity
 ) {
