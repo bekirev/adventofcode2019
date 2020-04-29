@@ -105,8 +105,12 @@ internal class GameOnGrid private constructor(
 
         while (isActive) {
             val gameData = updateViewChannel.receive()
-            gameGrid.changeElements(gameData.grid.asSequence().map(Map.Entry<Position, Tile>::toPair))
-            val ballPos = gameGrid.bounds.allPositions().first { pos -> gameGrid[pos] == BALL }
+            gameGrid.changeElements(
+                gameData.grid.asSequence().map(Map.Entry<Position, Tile>::toPair)
+            )
+            val ballPos = gameGrid.bounds.allPositions().first { pos ->
+                gameGrid[pos] == BALL
+            }
             val ballPrevPosition = ballPrevPos
             val trajectory = if (ballPrevPosition == null) {
                 ballPrevPos = ballPos
@@ -116,13 +120,15 @@ internal class GameOnGrid private constructor(
                 ballPrevPos = ballPos
                 trajectory
             }.toSet()
-            screenGrid.changeElements(gameGrid.bounds.allPositions().map { pos ->
-                pos to when {
-                    gameGrid[pos] == BALL -> ScreenCell.BALL
-                    pos in trajectory -> ScreenCell.TRAJECTORY
-                    else -> gameGrid[pos].toScreenCell()
+            screenGrid.changeElements(
+                gameGrid.bounds.allPositions().map { pos ->
+                    pos to when {
+                        gameGrid[pos] == BALL -> ScreenCell.BALL
+                        pos in trajectory -> ScreenCell.TRAJECTORY
+                        else -> gameGrid[pos].toScreenCell()
+                    }
                 }
-            })
+            )
             if (gameData.score != null) {
                 score = gameData.score
             }
@@ -155,8 +161,8 @@ internal class GameOnGrid private constructor(
                     val nextPos = when {
                         gameGrid[pos + angle] in setOf(BLOCK, HORIZONTAL_PADDLE) -> pos - angle
                         else -> Position(
-                            pos.x + if (isTransparent(pos + angle.xProjection)) angle.x else -angle.x,
-                            pos.y + if (isTransparent(pos + angle.yProjection)) angle.y else -angle.y
+                            pos.x + if (isTransparent(pos.plusX(angle.x))) angle.x else -angle.x,
+                            pos.y + if (isTransparent(pos.plusY(angle.y))) angle.y else -angle.y
                         )
                     }
                     list.add(nextPos)

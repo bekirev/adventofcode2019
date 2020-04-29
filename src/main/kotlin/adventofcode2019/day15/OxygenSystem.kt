@@ -69,7 +69,11 @@ private fun timeToFill(map: Grid<GridCell>): Int {
     }
     return timeToFill(
         oxygenMap,
-        setOf(map.bounds.allPositions().first { pos -> oxygenMap[pos] == OXYGEN }),
+        setOf(
+            map.bounds.allPositions().first { pos ->
+                oxygenMap[pos] == OXYGEN
+            }
+        ),
         0
     )
 }

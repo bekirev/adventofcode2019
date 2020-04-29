@@ -34,7 +34,8 @@ fun main() {
         )
     )
     println(
-        Bounds(0, 49, 0, 49).allPositions()
+        Bounds(0, 49, 0, 49)
+            .allPositions()
             .map(spaceScanner::scan)
             .count(BEING_PULLED::equals)
     )
@@ -65,9 +66,10 @@ private class Drones(private val memory: ArrayMemory) : SpaceScanner {
         ) {
             companion object {
                 fun fromMemory(memory: Memory): Drone {
-                    val transformingInputProvider = TransformingInputProvider<Int>(
-                        Channel<IntCodeNumber>().asMonoBus()
-                    ) { IntCodeNumber.fromInt(it) }
+                    val transformingInputProvider = TransformingInputProvider(
+                        Channel<IntCodeNumber>().asMonoBus(),
+                        IntCodeNumber.Companion::fromInt
+                    )
                     val transformingOutputConsumer = TransformingOutputConsumer(
                         Channel<IntCodeNumber>().asMonoBus(),
                         IntCodeNumber::toCellState
@@ -151,6 +153,3 @@ private fun SpaceScanner.maxCubeSizeInRow(row: Int): Pair<Position, Int> {
     }
     return maxCubeSizeInRow(findFirstBeingPulledCellColumn())
 }
-
-private fun Position.plusX(value: Int): Position = copy(x = x + value)
-private fun Position.plusY(value: Int): Position = copy(y = y + value)
