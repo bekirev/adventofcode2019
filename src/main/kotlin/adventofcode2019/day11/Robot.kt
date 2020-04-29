@@ -15,7 +15,7 @@ import adventofcode2019.intcode.OutputInstruction
 import adventofcode2019.intcode.createIntCodeAllInstr
 import kotlinx.coroutines.channels.Channel
 
-class Robot private constructor(
+internal class Robot private constructor(
     private val intCode: IntCode,
     private val inputChannel: Channel<IntCodeNumber>,
     private val outputChannel: Channel<IntCodeNumber>
@@ -64,8 +64,8 @@ class Robot private constructor(
     }
 }
 
-data class RobotOutput(val paintColor: Color, val turnDirection: TurnDirection)
+internal data class RobotOutput(val paintColor: Color, val turnDirection: TurnDirection)
 
-enum class TurnDirection {
+internal enum class TurnDirection {
     LEFT, RIGHT
 }

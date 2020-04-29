@@ -57,7 +57,7 @@ private fun createAndRunRobotOnColor(firstPlateColor: Color): RobotWorkResult {
     }
 }
 
-data class RobotWorkResult(
+internal data class RobotWorkResult(
     val grid: ArrayGrid<Color>,
     val paintedPlaces: Set<Position>
 )

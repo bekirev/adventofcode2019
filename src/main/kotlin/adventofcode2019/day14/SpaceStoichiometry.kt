@@ -24,7 +24,7 @@ fun main() {
     )
 }
 
-fun searchMaxArg(baseArg: BigInteger, maxValue: BigInteger, function: (BigInteger) -> BigInteger): BigInteger {
+private fun searchMaxArg(baseArg: BigInteger, maxValue: BigInteger, function: (BigInteger) -> BigInteger): BigInteger {
     tailrec fun findRange(baseArg: BigInteger, baseValue: BigInteger): Pair<BigInteger, BigInteger> {
         return if (baseValue < maxValue) {
             val rightArg = baseArg * BigInteger.TWO
@@ -67,7 +67,7 @@ fun searchMaxArg(baseArg: BigInteger, maxValue: BigInteger, function: (BigIntege
     return findMaxArg(range.first, range.second)
 }
 
-fun String.toReaction(): ChemicalReaction {
+private fun String.toReaction(): ChemicalReaction {
     fun String.toChemicalReactionItem(): ChemicalReactionItem {
         val split = split(" ")
         return ChemicalReactionItem(
@@ -93,7 +93,7 @@ fun String.toReaction(): ChemicalReaction {
     )
 }
 
-class NanoFactory private constructor(private val reactions: Map<Chemical, ChemicalReaction>) {
+internal class NanoFactory private constructor(private val reactions: Map<Chemical, ChemicalReaction>) {
     companion object {
         private val RAW_MATERIALS = setOf(ORE)
         fun fromSequence(sequence: Sequence<ChemicalReaction>): NanoFactory {
@@ -159,22 +159,22 @@ class NanoFactory private constructor(private val reactions: Map<Chemical, Chemi
     }
 }
 
-inline class Chemical(val name: String)
+internal inline class Chemical(val name: String)
 
-val ORE = Chemical("ORE")
+internal val ORE = Chemical("ORE")
 
-data class ChemicalReaction(
+internal data class ChemicalReaction(
     val inputChemicals: InputChemicals,
     val outputChemical: ChemicalReactionItem
 )
 
-data class ChemicalReactionItem(
+internal data class ChemicalReactionItem(
     val chemical: Chemical,
     val quantity: BigInteger
 ) {
     operator fun times(n: BigInteger): ChemicalReactionItem = ChemicalReactionItem(chemical, quantity * n)
 }
 
-class InputChemicals(private val chemicals: Set<ChemicalReactionItem>) {
+internal class InputChemicals(private val chemicals: Set<ChemicalReactionItem>) {
     fun chemicals(): Set<ChemicalReactionItem> = chemicals
 }

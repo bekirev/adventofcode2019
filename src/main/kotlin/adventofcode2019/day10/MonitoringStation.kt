@@ -26,7 +26,7 @@ fun main() {
     println("$asteroidNumber200: ${asteroidNumber200.position.x * 100 + asteroidNumber200.position.y}")
 }
 
-fun Grid<PositionState>.bestObservationPosition(): ObservationPosition {
+internal fun Grid<PositionState>.bestObservationPosition(): ObservationPosition {
     fun observationPossibilities(position: Position): Int {
         return visibleAsteroids(this, position)
             .count()
@@ -40,7 +40,7 @@ fun Grid<PositionState>.bestObservationPosition(): ObservationPosition {
     return ObservationPosition(pos, count)
 }
 
-data class ObservationPosition(val position: Position, val visibleAsteroidsCount: Int)
+internal data class ObservationPosition(val position: Position, val visibleAsteroidsCount: Int)
 
 private fun Grid<PositionState>.laserVaporizationSequence(position: Position): Sequence<VisibleAsteroid> = sequence {
     val asteroidMap: Grid<PositionState> = this@laserVaporizationSequence
@@ -95,7 +95,7 @@ private fun visibleAsteroids(asteroidMap: Grid<PositionState>, position: Positio
 
 private data class VisibleAsteroid(val position: Position, val angle: Angle)
 
-enum class PositionState {
+internal enum class PositionState {
     EMPTY, ASTEROID
 }
 

@@ -28,12 +28,12 @@ fun main() {
     println(findMaxThrusterSignalWithFeedback(initialMemory.copyOf()))
 }
 
-data class ThrusterSignalResult(
+internal data class ThrusterSignalResult(
     val signal: IntCodeNumber,
     val phaseSettings: PhaseSettings
 )
 
-data class PhaseSettings(
+internal data class PhaseSettings(
     val a: Int,
     val b: Int,
     val c: Int,
@@ -41,13 +41,13 @@ data class PhaseSettings(
     val e: Int
 )
 
-fun findMaxThrusterSignal(initialMemory: ArrayMemory): ThrusterSignalResult {
+internal fun findMaxThrusterSignal(initialMemory: ArrayMemory): ThrusterSignalResult {
     return findMaxThrusterSignal(0..4, initialMemory) { initMemory, input ->
         runAmplificationCircuit(initMemory, input)
     }
 }
 
-fun findMaxThrusterSignalWithFeedback(initialMemory: ArrayMemory): ThrusterSignalResult {
+internal fun findMaxThrusterSignalWithFeedback(initialMemory: ArrayMemory): ThrusterSignalResult {
     return findMaxThrusterSignal(5..9, initialMemory) { initMemory, input ->
         runAmplificationCircuitWithFeedback(initMemory, input)
     }

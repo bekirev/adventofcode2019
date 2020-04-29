@@ -11,7 +11,7 @@ class MonitoringStationTest {
 .....
 #####
 ....#
-...##""".lineSequence().input()
+...##""".lineSequence().asGrid()
         Assert.assertEquals(ObservationPosition(Position(3, 4), 8), map.bestObservationPosition())
     }
 
@@ -26,7 +26,7 @@ class MonitoringStationTest {
 #..#....#.
 .##.#..###
 ##...#..#.
-.#....####""".lineSequence().input()
+.#....####""".lineSequence().asGrid()
         Assert.assertEquals(ObservationPosition(Position(5, 8), 33), map.bestObservationPosition())
     }
 
@@ -41,7 +41,7 @@ class MonitoringStationTest {
 ..#...##..
 ..##....##
 ......#...
-.####.###.""".lineSequence().input()
+.####.###.""".lineSequence().asGrid()
         Assert.assertEquals(ObservationPosition(Position(1, 2), 35), map.bestObservationPosition())
     }
 
@@ -56,7 +56,7 @@ class MonitoringStationTest {
 ..#.#..#.#
 #..#.#.###
 .##...##.#
-.....#.#..""".lineSequence().input()
+.....#.#..""".lineSequence().asGrid()
         Assert.assertEquals(ObservationPosition(Position(6, 3), 41), map.bestObservationPosition())
     }
 
@@ -81,7 +81,7 @@ class MonitoringStationTest {
 ....##.##.###..#####
 .#.#.###########.###
 #.#.#.#####.####.###
-###.##.####.##.#..##""".lineSequence().input()
+###.##.####.##.#..##""".lineSequence().asGrid()
         Assert.assertEquals(ObservationPosition(Position(11, 13), 210), map.bestObservationPosition())
     }
 

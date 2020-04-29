@@ -21,7 +21,7 @@ fun main() {
     }
 }
 
-fun findClosestIntersection(wirePathsA: String, wirePathsB: String): Pair<Point, Int>? {
+internal fun findClosestIntersection(wirePathsA: String, wirePathsB: String): Pair<Point, Int>? {
     return cartesianProduct(lineToWires(wirePathsA), lineToWires(wirePathsB))
         .asSequence()
         .map { crossing(it.first, it.second) }

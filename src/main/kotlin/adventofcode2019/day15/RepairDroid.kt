@@ -39,7 +39,7 @@ import kotlinx.coroutines.withContext
 import java.util.Deque
 import java.util.LinkedList
 
-class RepairDroid private constructor(
+internal class RepairDroid private constructor(
     private val droidProgram: IntCode,
     private val droidProgramInput: SendBus<Direction>,
     private val droidProgramOutput: ReceiveBus<Status>
@@ -172,18 +172,18 @@ class RepairDroid private constructor(
     }
 }
 
-sealed class Command {
+private sealed class Command {
     object EXIT : Command()
     data class MovementCommand(val direction: Direction) : Command()
 }
 
-fun Direction.toMovementCommand(): MovementCommand = MovementCommand(this)
+private fun Direction.toMovementCommand(): MovementCommand = MovementCommand(this)
 
-enum class Direction {
+internal enum class Direction {
     NORTH, SOUTH, WEST, EAST
 }
 
-fun String.toDirection(): Direction = when (this) {
+private fun String.toDirection(): Direction = when (this) {
     "N" -> NORTH
     "S" -> SOUTH
     "W" -> WEST
@@ -191,43 +191,43 @@ fun String.toDirection(): Direction = when (this) {
     else -> error("Unknown direction: $this")
 }
 
-fun Direction.toIntCodeNumber(): IntCodeNumber = when (this) {
+private fun Direction.toIntCodeNumber(): IntCodeNumber = when (this) {
     NORTH -> IntCodeNumber.ONE
     SOUTH -> IntCodeNumber.TWO
     WEST -> IntCodeNumber.fromInt(3)
     EAST -> IntCodeNumber.fromInt(4)
 }
 
-fun Direction.opposite(): Direction = when (this) {
+private fun Direction.opposite(): Direction = when (this) {
     NORTH -> SOUTH
     SOUTH -> NORTH
     WEST -> EAST
     EAST -> WEST
 }
 
-operator fun Position.plus(direction: Direction): Position = when (direction) {
+internal operator fun Position.plus(direction: Direction): Position = when (direction) {
     NORTH -> Position(x, y + 1)
     SOUTH -> Position(x, y - 1)
     WEST -> Position(x - 1, y)
     EAST -> Position(x + 1, y)
 }
 
-enum class Status {
+private enum class Status {
     HIT_THE_WALL, MOVE, MOVE_AND_FOUND
 }
 
-fun IntCodeNumber.toStatus(): Status = when (this) {
+private fun IntCodeNumber.toStatus(): Status = when (this) {
     IntCodeNumber.ZERO -> HIT_THE_WALL
     IntCodeNumber.ONE -> MOVE
     IntCodeNumber.TWO -> MOVE_AND_FOUND
     else -> error("Unknown status code: $this")
 }
 
-enum class GridCell {
+internal enum class GridCell {
     FOG, DRONE, DRONE_OXYGEN_SYSTEM, WALL, EXPLORED, OXYGEN_SYSTEM
 }
 
-fun GridCell.asString(): String = when (this) {
+private fun GridCell.asString(): String = when (this) {
     FOG -> " "
     DRONE -> "0"
     DRONE_OXYGEN_SYSTEM -> "@"

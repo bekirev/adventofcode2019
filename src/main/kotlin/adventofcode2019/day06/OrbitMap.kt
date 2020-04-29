@@ -2,9 +2,9 @@ package adventofcode2019.day06
 
 import java.util.LinkedList
 
-inline class Object(val id: String)
+internal inline class Object(val id: String)
 
-class OrbitMap private constructor(private val root: Node) {
+internal class OrbitMap private constructor(private val root: Node) {
     companion object {
         private val COM = Object("COM")
 
@@ -38,7 +38,7 @@ class OrbitMap private constructor(private val root: Node) {
 
 private data class Node(val obj: Object, val children: Set<Node>)
 
-interface DepthUniversalOrbitMapVisitor {
+internal interface DepthUniversalOrbitMapVisitor {
     fun visit(obj: Object, depth: Int)
 }
 
@@ -52,7 +52,7 @@ private fun Node.visit(visitor: DepthUniversalOrbitMapVisitor) {
     visit(visitor, 0)
 }
 
-interface PathUniversalOrbitMapVisitor {
+internal interface PathUniversalOrbitMapVisitor {
     fun visit(obj: Object, pathToObject: Path)
 }
 
@@ -67,7 +67,7 @@ private fun Node.visit(visitor: PathUniversalOrbitMapVisitor) {
     visit(visitor, Path.EMPTY)
 }
 
-class Path private constructor(private val list: LinkedList<Object>) {
+internal class Path private constructor(private val list: LinkedList<Object>) {
     companion object {
         val EMPTY = Path(LinkedList())
 

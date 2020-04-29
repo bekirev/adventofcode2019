@@ -46,17 +46,17 @@ fun main() {
     println(minPos.x * 10000 + minPos.y)
 }
 
-interface SpaceScanner {
+private interface SpaceScanner {
     fun scan(position: Position): SpaceState
 }
 
-class CachingSpaceScanner(private val spaceScanner: SpaceScanner) : SpaceScanner {
+private class CachingSpaceScanner(private val spaceScanner: SpaceScanner) : SpaceScanner {
     private val mapCache: HashMap<Position, SpaceState> = HashMap()
 
     override fun scan(position: Position): SpaceState = mapCache.getOrPut(position) { spaceScanner.scan(position) }
 }
 
-class Drones(private val memory: ArrayMemory) : SpaceScanner {
+private class Drones(private val memory: ArrayMemory) : SpaceScanner {
     companion object {
         private class Drone private constructor(
             private val program: IntCode,
@@ -100,17 +100,17 @@ class Drones(private val memory: ArrayMemory) : SpaceScanner {
     }
 }
 
-enum class SpaceState {
+private enum class SpaceState {
     STATIONARY, BEING_PULLED
 }
 
-fun IntCodeNumber.toCellState(): SpaceState = when (this) {
+private fun IntCodeNumber.toCellState(): SpaceState = when (this) {
     IntCodeNumber.ZERO -> STATIONARY
     IntCodeNumber.ONE -> BEING_PULLED
     else -> error("Unknown cell state code: $this")
 }
 
-fun SpaceScanner.maxCubeSizeInRow(row: Int): Pair<Position, Int> {
+private fun SpaceScanner.maxCubeSizeInRow(row: Int): Pair<Position, Int> {
     fun maxCubeSizeFromPosition(position: Position): Int {
         tailrec fun maxCubeSizeFromPosition(edgeSize: Int): Int {
             return if (

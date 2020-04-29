@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.LinkedList
 
-class GameOnGrid private constructor(
+internal class GameOnGrid private constructor(
     private val gameProgram: IntCode,
     private val gameInputChannel: Channel<IntCodeNumber>,
     private val gameOutputChannel: Channel<IntCodeNumber>,
@@ -192,20 +192,20 @@ class GameOnGrid private constructor(
     }
 }
 
-data class GameData(
+private data class GameData(
     val grid: Map<Position, Tile>,
     val score: Int?
 )
 
-enum class Tile {
+private enum class Tile {
     EMPTY, WALL, BLOCK, HORIZONTAL_PADDLE, BALL
 }
 
-enum class ScreenCell {
+private enum class ScreenCell {
     EMPTY, WALL, BLOCK, HORIZONTAL_PADDLE, BALL, TRAJECTORY
 }
 
-fun IntCodeNumber.toTile(): Tile = when (this) {
+private fun IntCodeNumber.toTile(): Tile = when (this) {
     IntCodeNumber.ZERO -> EMPTY
     IntCodeNumber.ONE -> WALL
     IntCodeNumber.fromInt(2) -> BLOCK
@@ -214,7 +214,7 @@ fun IntCodeNumber.toTile(): Tile = when (this) {
     else -> throw IllegalArgumentException("Unknown tile code: $this")
 }
 
-fun Tile.toScreenCell(): ScreenCell = when (this) {
+private fun Tile.toScreenCell(): ScreenCell = when (this) {
     EMPTY -> ScreenCell.EMPTY
     WALL -> ScreenCell.WALL
     BLOCK -> ScreenCell.BLOCK
