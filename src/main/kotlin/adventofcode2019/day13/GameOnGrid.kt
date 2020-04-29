@@ -178,18 +178,15 @@ internal class GameOnGrid private constructor(
     private suspend fun provideInput() = coroutineScope {
         while (isActive) {
             provideInputChannel.receive()
-            var readValue: Int
-            val stepToDo = stepsToDo.poll()
-            if (stepToDo != null) {
-                readValue = stepToDo
-            } else {
-                do {
-                    readValue = try {
-                        readLine()!!.toInt()
-                    } catch (e: NumberFormatException) {
-                        2
-                    }
-                } while (readValue !in setOf(-1, 0, 1))
+            val readValue: Int = when (val stepToDo: Int? = stepsToDo.poll()) {
+                is Int -> stepToDo
+                else -> {
+                    var valueFromConsole: Int?
+                    do {
+                        valueFromConsole = readLine()!!.toIntOrNull()
+                    } while (valueFromConsole !in setOf(-1, 0, 1))
+                    valueFromConsole!!
+                }
             }
             steps.add(readValue)
             gameInputChannel.send(IntCodeNumber.fromInt(readValue))
