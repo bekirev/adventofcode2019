@@ -40,7 +40,6 @@ class ArrayGrid<T> private constructor(
 
         private fun xToArrayIndex(bounds: Bounds, x: Int): Int = x - bounds.minX
         private fun yToArrayIndex(bounds: Bounds, y: Int): Int = y - bounds.minY
-//        private fun arrayColumnIndexToX(bounds: Bounds, columnIndex: Int): Int = columnIndex + bounds.minX
         private fun arrayRowIndexToY(bounds: Bounds, rowIndex: Int): Int = rowIndex + bounds.minY
     }
 
