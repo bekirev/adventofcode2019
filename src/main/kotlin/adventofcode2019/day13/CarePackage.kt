@@ -16,7 +16,7 @@ fun main() {
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 private fun day1() {
     val gameOnGrid = GameOnGrid.fromMemory(
-        ArrayMemory.fromSequence(
+        ArrayMemory.of(
             Paths.get("adventofcode2019", "day13", "input.txt")
                 .intCodeInput()
         )
@@ -27,11 +27,11 @@ private fun day1() {
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 private fun day2() {
     val gameOnGrid = GameOnGrid.fromMemory(
-        ArrayMemory.fromSequence(
+        ArrayMemory.of(
             Paths.get("adventofcode2019", "day13", "input.txt")
                 .intCodeInput()
         ).apply {
-            this[0] = IntCodeNumber.fromInt(2)
+            this[0] = IntCodeNumber.of(2)
         },
         Paths.get("adventofcode2019", "day13", "steps.txt")
             .linesFromResource()

@@ -58,12 +58,10 @@ private class Image(private val size: Size, private val layers: Array<Layer>) {
                 WHITE -> WHITE
                 TRANSPARENT -> back
             }
-            var color: Color = layers[0].colorAt(position)
-            for (layer in layers.asSequence().drop(1)) {
-                if (color != TRANSPARENT) break
-                color = reduce(color, layer.colorAt(position))
+            return layers.asSequence().drop(1).fold(layers[0].colorAt(position)) { color: Color, layer: Layer ->
+                if (color != TRANSPARENT) return@fold color
+                reduce(color, layer.colorAt(position))
             }
-            return color
         }
         fun Size.allPositions(): Sequence<Position> = sequence {
             for (row in 0 until height) {
@@ -87,10 +85,6 @@ private class Image(private val size: Size, private val layers: Array<Layer>) {
 
 private class Layer(val size: Size, private val data: Array<Color>) {
     companion object {
-        internal fun fromVararg(size: Size, vararg values: Color): Layer {
-            val data: Array<Color> = Array(size.pixelsCount) { TRANSPARENT }
-            return Layer(size, values.copyInto(data))
-        }
         internal fun fromList(size: Size, list: List<Color>): Layer = Layer(size, list.toTypedArray())
     }
 
@@ -142,10 +136,4 @@ private fun getInput(): Sequence<Color> {
         .asSequence()
         .flatMap(String::asSequence)
         .map(Char::toColor)
-}
-
-private fun List<Int>.toIntArray(): IntArray {
-    val array = IntArray(this.size)
-    this.forEachIndexed { index, value -> array[index] = value }
-    return array
 }

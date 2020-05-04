@@ -14,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 import java.nio.file.Paths
 
 fun main() {
-    val memory = ArrayMemory.fromSequence(
+    val memory = ArrayMemory.of(
         Paths.get("adventofcode2019", "day05", "input.txt")
             .intCodeInput()
     )
@@ -29,7 +29,7 @@ private fun createAndRunIntCode(memory: Memory, input: Int) {
 internal fun createAndRunIntCode(memory: Memory, input: Int, outputInstruction: Instruction) = runBlocking {
     createIntCodeAllInstr(
         memory,
-        InputInstruction(ConstantInputProvider(IntCodeNumber.fromInt(input))),
+        InputInstruction(ConstantInputProvider(IntCodeNumber.of(input))),
         outputInstruction
     ).run()
 }

@@ -12,22 +12,21 @@ fun main() {
     val input = Paths.get("adventofcode2019", "day03", "input.txt")
         .linesFromResource()
         .toList()
-    val res = findClosestIntersection(input[0], input[1])
-    if (res != null) {
-        val (point, distance) = res
-        println("Point: $point; distance: $distance")
-    } else {
-        println("No intersection")
+    when (val res = findClosestIntersection(input[0], input[1])) {
+        null -> println("No intersection")
+        else -> {
+            val (point, distance) = res
+            println("Point: $point; distance: $distance")
+        }
     }
 }
 
 internal fun findClosestIntersection(wirePathsA: String, wirePathsB: String): Pair<Point, Int>? {
     return cartesianProduct(lineToWires(wirePathsA), lineToWires(wirePathsB))
-        .asSequence()
         .map { crossing(it.first, it.second) }
         .filterIsInstance<Crossing.PointCrossing>()
         .filter { it.point != ZERO_POINT }
-        .map { it -> Pair<Point, Int>(it.point, manhattanDistance(ZERO_POINT, it.point)) }
+        .map { crossing -> Pair(crossing.point, manhattanDistance(ZERO_POINT, crossing.point)) }
         .minBy { it.second }
 }
 
@@ -81,7 +80,7 @@ private data class Wire(val startPoint: Point, val wirePath: WirePath) {
     val endPoint: Point by lazy { startPoint.plus(wirePath) }
 }
 
-data class Point(val x: Int, val y: Int)
+internal data class Point(val x: Int, val y: Int)
 
 private fun Point.plus(wirePath: WirePath): Point {
     return when (wirePath.direction) {
@@ -92,14 +91,15 @@ private fun Point.plus(wirePath: WirePath): Point {
     }
 }
 
-fun manhattanDistance(pointA: Point, pointB: Point): Int {
+private fun manhattanDistance(pointA: Point, pointB: Point): Int {
     return abs(pointA.x - pointB.x) + abs(pointA.y - pointB.y)
 }
 
 private fun crossing(wireA: Wire, wireB: Wire): Crossing {
-    fun crossing(crossPoint: Point, horRange: IntRange, verRange: IntRange): Crossing =
-        if (horRange.contains(crossPoint.x) && verRange.contains(crossPoint.y)) Crossing.PointCrossing(crossPoint)
-        else Crossing.NoCrossing
+    fun crossing(crossPoint: Point, horRange: IntRange, verRange: IntRange): Crossing = when {
+        horRange.contains(crossPoint.x) && verRange.contains(crossPoint.y) -> Crossing.PointCrossing(crossPoint)
+        else -> Crossing.NoCrossing
+    }
 
     return when (wireA.wirePath.direction.axe()) {
         DirectionAxe.HORIZONTAL -> when (wireB.wirePath.direction.axe()) {

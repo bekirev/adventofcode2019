@@ -41,3 +41,14 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     freeCompilerArgs = listOf("-Xinline-classes")
 }
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+dependencies {
+    val kotestVersion = "4.0.5"
+    testImplementation("io.kotest", "kotest-runner-junit5-jvm", kotestVersion) // for kotest framework
+    testImplementation("io.kotest", "kotest-assertions-core-jvm", kotestVersion) // for kotest core jvm assertions
+    testImplementation("io.kotest", "kotest-property-jvm", kotestVersion) // for kotest property test
+}

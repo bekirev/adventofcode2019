@@ -30,7 +30,7 @@ internal class Robot private constructor(
             )
             val outputChannel = Channel<IntCodeNumber>(Channel.UNLIMITED)
             val intCode = createIntCodeAllInstr(
-                AdditionalMapMemory.fromMemory(ArrayMemory.fromSequence(memorySeq)),
+                AdditionalMapMemory.fromMemory(ArrayMemory.of(memorySeq)),
                 InputInstruction(transformingInputProvider),
                 OutputInstruction(ChannelOutputConsumer(outputChannel))
             )

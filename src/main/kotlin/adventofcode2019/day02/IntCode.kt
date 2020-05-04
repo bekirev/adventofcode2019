@@ -16,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import java.nio.file.Paths
 
 fun main() {
-    val memory = ArrayMemory.fromSequence(
+    val memory = ArrayMemory.of(
         Paths.get("adventofcode2019", "day02", "input.txt")
             .intCodeInput()
     )
@@ -24,7 +24,7 @@ fun main() {
     loop@ for (noun in 0..99) {
         for (verb in 0..99) {
             val result = initMemoryAndRunIntCode(memory.copyOf(), noun, verb).memoryAt(0)
-            if (result == IntCodeNumber.fromInt(19690720)) {
+            if (result == IntCodeNumber.of(19690720)) {
                 println("noun: $noun, verb: $verb, result: ${100 * noun + verb}")
                 break@loop
             }
@@ -33,8 +33,8 @@ fun main() {
 }
 
 private fun initMemoryAndRunIntCode(memory: Memory, noun: Int, verb: Int): IntCode {
-    memory[1] = IntCodeNumber.fromInt(noun)
-    memory[2] = IntCodeNumber.fromInt(verb)
+    memory[1] = IntCodeNumber.of(noun)
+    memory[2] = IntCodeNumber.of(verb)
     return runIntCode(memory)
 }
 

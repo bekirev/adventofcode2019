@@ -27,7 +27,7 @@ import java.nio.file.Paths
 fun main() {
     val spaceScanner = CachingSpaceScanner(
         Drones(
-            ArrayMemory.fromSequence(
+            ArrayMemory.of(
                 Paths.get("adventofcode2019", "day19", "input.txt")
                     .intCodeInput()
             )
@@ -66,10 +66,9 @@ private class Drones(private val memory: ArrayMemory) : SpaceScanner {
         ) {
             companion object {
                 fun fromMemory(memory: Memory): Drone {
-                    val transformingInputProvider = TransformingInputProvider(
-                        Channel<IntCodeNumber>().asMonoBus(),
-                        IntCodeNumber.Companion::fromInt
-                    )
+                    val transformingInputProvider = TransformingInputProvider<Int>(
+                        Channel<IntCodeNumber>().asMonoBus()
+                    ) { IntCodeNumber.of(it) }
                     val transformingOutputConsumer = TransformingOutputConsumer(
                         Channel<IntCodeNumber>().asMonoBus(),
                         IntCodeNumber::toCellState
@@ -116,7 +115,7 @@ private fun SpaceScanner.maxCubeSizeInRow(row: Int): Pair<Position, Int> {
     fun maxCubeSizeFromPosition(position: Position): Int {
         tailrec fun maxCubeSizeFromPosition(edgeSize: Int): Int {
             return if (
-                setOf(
+                sequenceOf(
                     scan(position.plusX(edgeSize)),
                     scan(position.plusY(edgeSize))
                 ).all(BEING_PULLED::equals)
@@ -132,11 +131,9 @@ private fun SpaceScanner.maxCubeSizeInRow(row: Int): Pair<Position, Int> {
         }
     }
     fun findFirstBeingPulledCellColumn(): Int {
-        var col = 0
-        while (scan(Position(col, row)) != BEING_PULLED) {
-            ++col
-        }
-        return col
+        return generateSequence(0, 1::plus)
+            .filter { col -> scan(Position(col, row)) == BEING_PULLED }
+            .first()
     }
     fun maxCubeSizeInRow(startColumn: Int): Pair<Position, Int> {
         var prevPos = Position(startColumn, row)

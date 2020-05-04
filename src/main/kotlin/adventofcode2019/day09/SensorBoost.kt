@@ -15,12 +15,12 @@ import kotlinx.coroutines.runBlocking
 import java.nio.file.Paths
 
 fun main() {
-    val program = ArrayMemory.fromSequence(
+    val program = ArrayMemory.of(
         Paths.get("adventofcode2019", "day09", "input.txt")
             .intCodeInput()
     )
     val intCodeFirstPart = intCode(program.copyOf(), IntCodeNumber.ONE)
-    val intCodeSecondPart = intCode(program, IntCodeNumber.fromInt(2))
+    val intCodeSecondPart = intCode(program, IntCodeNumber.of(2))
     runBlocking {
         intCodeFirstPart.run()
         intCodeSecondPart.run()

@@ -37,7 +37,7 @@ fun Path.intCodeInput(): Sequence<IntCodeNumber> {
         .flatMap {
             it.split(",").asSequence()
                 .map(String::trim)
-                .map { str -> IntCodeNumber.fromString(str) }
+                .map { str -> IntCodeNumber.of(str) }
                 .filterNotNull()
         }
 }

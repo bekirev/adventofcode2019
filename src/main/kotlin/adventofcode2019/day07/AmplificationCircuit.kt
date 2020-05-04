@@ -19,7 +19,7 @@ import java.nio.file.Paths
 import java.util.concurrent.atomic.AtomicInteger
 
 fun main() {
-    val initialMemory = ArrayMemory.fromList(
+    val initialMemory = ArrayMemory.of(
         Paths.get("adventofcode2019", "day07", "input.txt")
             .intCodeInput()
             .toList()
@@ -136,7 +136,7 @@ private suspend fun runAmplificationCircuit(
             initialMemory.copyOf(),
             InputInstruction(
                 TwoSequentialInputProvider(
-                    ConstantInputProvider(IntCodeNumber.fromInt(phase)),
+                    ConstantInputProvider(IntCodeNumber.of(phase)),
                     input
                 )
             ),
@@ -162,11 +162,9 @@ private suspend fun runAmplificationCircuit(
 private class TwoSequentialInputProvider(private val first: InputProvider, private val second: InputProvider) : InputProvider {
     private val invokeCount = AtomicInteger(0)
     override suspend fun get(): IntCodeNumber {
-        val count = invokeCount.getAndIncrement()
-        return if (count % 2 == 0) {
-            first.get()
-        } else {
-            second.get()
+        return when (invokeCount.getAndIncrement() % 2) {
+            0 -> first.get()
+            else -> second.get()
         }
     }
 }

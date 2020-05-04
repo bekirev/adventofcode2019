@@ -70,7 +70,7 @@ object ReadLineInputInstruction : Instruction {
     private val inputInstruction: Instruction = InputInstruction(object : InputProvider {
         override suspend fun get(): IntCodeNumber {
             return readLine()?.let { line ->
-                IntCodeNumber.fromString(line)
+                IntCodeNumber.of(line)
             } ?: throw IllegalArgumentException("Line is null")
         }
     })

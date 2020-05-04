@@ -12,24 +12,19 @@ class ArrayMemory constructor(private val array: Array<IntCodeNumber>) : Memory 
             return ArrayMemory(array.copyOf())
         }
 
-        fun fromSequence(values: Sequence<IntCodeNumber>): ArrayMemory {
+        fun of(values: Sequence<IntCodeNumber>): ArrayMemory {
             return ArrayMemory(values.toList().toTypedArray())
         }
 
-        fun fromVararg(vararg values: IntCodeNumber): ArrayMemory {
-            val array = Array(values.size) { IntCodeNumber.ZERO }
-            return ArrayMemory(values.copyInto(array))
+        fun of(vararg values: Int): ArrayMemory {
+            return ArrayMemory(Array(values.size) { index -> IntCodeNumber.of(values[index]) })
         }
 
-        fun fromIntVararg(vararg values: Int): ArrayMemory {
-            return ArrayMemory(Array(values.size) { index -> IntCodeNumber.fromInt(values[index]) })
+        fun of(vararg values: Long): ArrayMemory {
+            return ArrayMemory(Array(values.size) { index -> IntCodeNumber.of(values[index]) })
         }
 
-        fun fromLongVararg(vararg values: Long): ArrayMemory {
-            return ArrayMemory(Array(values.size) { index -> IntCodeNumber.fromLong(values[index]) })
-        }
-
-        fun fromList(list: List<IntCodeNumber>): ArrayMemory {
+        fun of(list: List<IntCodeNumber>): ArrayMemory {
             return ArrayMemory(list.toTypedArray())
         }
     }

@@ -7,11 +7,10 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 data class Angle(val x: Int, val y: Int) : Comparable<Angle> {
-    private val radian: Double by lazy { normalised.radian }
     private val normalised: Vector by lazy { Vector(x.toDouble(), y.toDouble()).normalised }
 
     companion object {
-        private data class Vector(val x: Double, val y: Double) {
+        private data class Vector(val x: Double, val y: Double) : Comparable<Vector> {
             val radian: Double by lazy {
                 val epsilon = 0.000001
                 when {
@@ -24,8 +23,10 @@ data class Angle(val x: Int, val y: Int) : Comparable<Angle> {
                 val length = sqrt(x.pow(2) + y.pow(2))
                 Vector(x / length, y / length)
             }
+
+            override fun compareTo(other: Vector): Int = compareValuesBy(this, other, Vector::radian)
         }
     }
 
-    override fun compareTo(other: Angle): Int = radian.compareTo(other.radian)
+    override fun compareTo(other: Angle): Int = compareValuesBy(this, other, Angle::normalised)
 }

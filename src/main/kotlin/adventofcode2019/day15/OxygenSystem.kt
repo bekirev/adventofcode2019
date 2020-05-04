@@ -19,7 +19,7 @@ import java.nio.file.Paths
 fun main() {
     val (map, movesToOxygenSystem) = RepairDroid.fromMemory(
         AdditionalMapMemory.fromMemory(
-            ArrayMemory.fromSequence(
+            ArrayMemory.of(
                 Paths.get("adventofcode2019", "day15", "input.txt")
                     .intCodeInput()
             )
@@ -50,9 +50,7 @@ private fun timeToFill(map: Grid<GridCell>): Int {
         }
     }
 
-    val oxygenMap: Grid<OxygenPropagationCell> = ArrayGrid.withBounds(map.bounds) {
-        EMPTY
-    }.apply {
+    val oxygenMap: Grid<OxygenPropagationCell> = ArrayGrid.withBounds(map.bounds) { EMPTY }.apply {
         changeElements(
             bounds.allPositions()
                 .map { pos ->

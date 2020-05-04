@@ -43,6 +43,8 @@ internal class GameOnGrid private constructor(
     private val stepsToDo = LinkedList(firstSteps)
 
     companion object {
+        private const val MAX_TRAJECTORY_LENGTH = 50
+
         fun fromMemory(memory: Memory, firstSteps: List<Int> = emptyList()): GameOnGrid {
             val gameInputChannel = Channel<IntCodeNumber>(Channel.UNLIMITED)
             val gameOutputChannel = Channel<IntCodeNumber>(Channel.UNLIMITED)
@@ -81,7 +83,7 @@ internal class GameOnGrid private constructor(
                 val x = gameOutputChannel.receive()
                 val y = gameOutputChannel.receive()
                 val thirdParam = gameOutputChannel.receive()
-                if (x == IntCodeNumber.fromInt(-1) && y == IntCodeNumber.ZERO) {
+                if (x == IntCodeNumber.of(-1) && y == IntCodeNumber.ZERO) {
                     score = thirdParam.toInt()
                     this@GameOnGrid.score = score
                 } else {
@@ -112,13 +114,16 @@ internal class GameOnGrid private constructor(
                 gameGrid[pos] == BALL
             }
             val ballPrevPosition = ballPrevPos
-            val trajectory = if (ballPrevPosition == null) {
-                ballPrevPos = ballPos
-                emptyList()
-            } else {
-                val trajectory = trajectory(ballPrevPosition, ballPos)
-                ballPrevPos = ballPos
-                trajectory
+            val trajectory = when (ballPrevPosition) {
+                null -> {
+                    ballPrevPos = ballPos
+                    emptyList()
+                }
+                else -> {
+                    val trajectory = trajectory(ballPrevPosition, ballPos)
+                    ballPrevPos = ballPos
+                    trajectory
+                }
             }.toSet()
             screenGrid.changeElements(
                 gameGrid.bounds.allPositions().map { pos ->
@@ -132,64 +137,67 @@ internal class GameOnGrid private constructor(
             if (gameData.score != null) {
                 score = gameData.score
             }
-            val lineSeparator = System.lineSeparator()
-            println(
-                "-".repeat(screenGrid.bounds.size().width)
-                    + lineSeparator
-                    + "Score: $score"
-                    + lineSeparator
-                    + screenGrid.toString(ScreenCell::asString).lines().reversed().joinToString(lineSeparator)
-                    + lineSeparator
-                    + steps.joinToString(",")
-            )
+            System.lineSeparator().also { lineSeparator ->
+                println(
+                    "-".repeat(screenGrid.bounds.size().width)
+                        + lineSeparator
+                        + "Score: $score"
+                        + lineSeparator
+                        + screenGrid.toString(ScreenCell::asString).lines().reversed().joinToString(lineSeparator)
+                        + lineSeparator
+                        + steps.joinToString(",")
+                )
+            }
             provideInputChannel.send(Unit)
         }
     }
 
 
     private fun trajectory(prevPos: Position, pos: Position): List<Position> {
-        tailrec fun trajectory(list: MutableList<Position>, prevPos: Position, pos: Position): List<Position> {
+        tailrec fun trajectory(list: List<Position>, prevPos: Position, pos: Position): List<Position> {
             fun isTransparent(pos: Position): Boolean = when (gameGrid[pos]) {
                 EMPTY -> true
                 else -> false
             }
-            return if (list.size >= 50) {
-                list
-            } else {
-                val angle = pos - prevPos
-                if (pos.y + angle.y <= gameGrid.bounds.maxY) {
-                    val nextPos = when {
-                        gameGrid[pos + angle] in setOf(BLOCK, HORIZONTAL_PADDLE) -> pos - angle
-                        else -> Position(
-                            pos.x + if (isTransparent(pos.plusX(angle.x))) angle.x else -angle.x,
-                            pos.y + if (isTransparent(pos.plusY(angle.y))) angle.y else -angle.y
-                        )
+            return when {
+                list.size < MAX_TRAJECTORY_LENGTH -> {
+                    val angle = pos - prevPos
+                    when {
+                        pos.y + angle.y <= gameGrid.bounds.maxY -> {
+                            val nextPos = when (gameGrid[pos + angle]) {
+                                BLOCK, HORIZONTAL_PADDLE -> pos - angle
+                                else -> Position(
+                                    pos.x + if (isTransparent(pos.plusX(angle.x))) angle.x else -angle.x,
+                                    pos.y + if (isTransparent(pos.plusY(angle.y))) angle.y else -angle.y
+                                )
+                            }
+                            trajectory(list.plus(nextPos), pos, nextPos)
+                        }
+                        else -> list
                     }
-                    list.add(nextPos)
-                    trajectory(list, pos, nextPos)
-                } else {
-                    list
                 }
+                else -> list
             }
         }
-        return trajectory(mutableListOf(), prevPos, pos)
+        return trajectory(emptyList(), prevPos, pos)
     }
 
     private suspend fun provideInput() = coroutineScope {
         while (isActive) {
             provideInputChannel.receive()
-            val readValue: Int = when (val stepToDo: Int? = stepsToDo.poll()) {
-                is Int -> stepToDo
-                else -> {
-                    var valueFromConsole: Int?
-                    do {
-                        valueFromConsole = readLine()!!.toIntOrNull()
-                    } while (valueFromConsole !in setOf(-1, 0, 1))
-                    valueFromConsole!!
+            val readValue = when (val stepToDo: Int? = stepsToDo.poll()) {
+                null -> {
+                    val readValueFn = { readLine()?.toIntOrNull() }
+                    tailrec fun readFromStdInputStream(readValue: Int?): Int = when (readValue) {
+                        -1, 0, 1 -> readValue
+                        else -> readFromStdInputStream(readValueFn())
+                    }
+                    readFromStdInputStream(readValueFn())
                 }
+                else -> stepToDo
             }
             steps.add(readValue)
-            gameInputChannel.send(IntCodeNumber.fromInt(readValue))
+            gameInputChannel.send(IntCodeNumber.of(readValue))
             updateModelChannel.send(Unit)
         }
     }
@@ -211,9 +219,9 @@ private enum class ScreenCell {
 private fun IntCodeNumber.toTile(): Tile = when (this) {
     IntCodeNumber.ZERO -> EMPTY
     IntCodeNumber.ONE -> WALL
-    IntCodeNumber.fromInt(2) -> BLOCK
-    IntCodeNumber.fromInt(3) -> HORIZONTAL_PADDLE
-    IntCodeNumber.fromInt(4) -> BALL
+    IntCodeNumber.TWO -> BLOCK
+    IntCodeNumber.of(3) -> HORIZONTAL_PADDLE
+    IntCodeNumber.of(4) -> BALL
     else -> throw IllegalArgumentException("Unknown tile code: $this")
 }
 

@@ -8,15 +8,15 @@ class IntCodeNumber private constructor(private val value: BigInteger): Comparab
         val ONE = IntCodeNumber(BigInteger.ONE)
         val TWO = IntCodeNumber(BigInteger.TWO)
 
-        fun fromInt(value: Int): IntCodeNumber {
+        fun of(value: Int): IntCodeNumber {
             return IntCodeNumber(BigInteger.valueOf(value.toLong()))
         }
 
-        fun fromLong(value: Long): IntCodeNumber {
+        fun of(value: Long): IntCodeNumber {
             return IntCodeNumber(BigInteger.valueOf(value))
         }
 
-        fun fromString(str: String): IntCodeNumber = IntCodeNumber(BigInteger(str))
+        fun of(str: String): IntCodeNumber = IntCodeNumber(BigInteger(str))
     }
 
     operator fun plus(other: IntCodeNumber): IntCodeNumber {

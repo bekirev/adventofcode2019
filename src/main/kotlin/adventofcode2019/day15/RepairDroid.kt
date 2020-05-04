@@ -143,11 +143,10 @@ internal class RepairDroid private constructor(
                     val pos = dronePosition + direction
                     when (status) {
                         HIT_THE_WALL -> grid.changeElements(sequenceOf(pos to WALL))
-                        in setOf(MOVE, MOVE_AND_FOUND) -> {
-                            if (direction == moves.peek()?.opposite()) {
-                                moves.pop()
-                            } else {
-                                moves.push(direction)
+                        MOVE, MOVE_AND_FOUND -> {
+                            when (direction) {
+                                moves.peek()?.opposite() -> moves.pop()
+                                else -> moves.push(direction)
                             }
                             if (status == MOVE_AND_FOUND && movesToOxygenSystem == 0) {
                                 movesToOxygenSystem = moves.size
@@ -194,8 +193,8 @@ private fun String.toDirection(): Direction = when (this) {
 private fun Direction.toIntCodeNumber(): IntCodeNumber = when (this) {
     NORTH -> IntCodeNumber.ONE
     SOUTH -> IntCodeNumber.TWO
-    WEST -> IntCodeNumber.fromInt(3)
-    EAST -> IntCodeNumber.fromInt(4)
+    WEST -> IntCodeNumber.of(3)
+    EAST -> IntCodeNumber.of(4)
 }
 
 private fun Direction.opposite(): Direction = when (this) {

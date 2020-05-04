@@ -15,9 +15,7 @@ object PathFinder {
 
     fun fromResources(strPath: String): Path {
         return Paths.get(
-            uriFromResources(
-                strPath
-            )
+            uriFromResources(strPath)
         )
     }
 }
@@ -42,16 +40,25 @@ fun Stream<String>.concat(): String {
     ).toString()
 }
 
-fun <T, U> cartesianProduct(c1: Collection<T>, c2: Collection<U>): List<Pair<T, U>> {
-    return c1.flatMap { c1Elem -> c2.map { c2Elem -> c1Elem to c2Elem } }
+fun <T, U> cartesianProduct(c1: Collection<T>, c2: Collection<U>): Sequence<Pair<T, U>> {
+    return c1.asSequence().flatMap { c1Elem ->
+        c2.asSequence().map { c2Elem ->
+            c1Elem to c2Elem
+        }
+    }
 }
 
 fun Int.pow(n: Int): Int {
     tailrec fun pow(value: Int, n: Int, result: Int): Int {
-        return if (n < 1) result else pow(value, n - 1, result * value)
+        return when (n) {
+            0 -> result
+            else -> pow(value, n - 1, result * value)
+        }
     }
-    if (n < 0) throw IllegalArgumentException("Negative power is not supported")
-    else return pow(this, n, 1)
+    return when {
+        n >= 0 -> pow(this, n, 1)
+        else -> throw IllegalArgumentException("Negative power is not supported")
+    }
 }
 
 fun Int.getDigitAt(index: Int): Int {
@@ -59,8 +66,10 @@ fun Int.getDigitAt(index: Int): Int {
 }
 
 fun Int.first(n: Int): Int {
-    if (n < 1) throw IllegalArgumentException("Negative power is not supported")
-    return (this % 10.pow(n))
+    return when {
+        n >= 1 -> this % 10.pow(n)
+        else -> throw IllegalArgumentException("Negative power is not supported")
+    }
 }
 
 fun Int.digitsCount(): Int {

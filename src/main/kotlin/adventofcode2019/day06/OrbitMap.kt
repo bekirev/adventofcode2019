@@ -12,7 +12,7 @@ internal class OrbitMap private constructor(private val root: Node) {
             fun createTree(map: Map<Object, Set<Object>>, root: Object): Node {
                 val children = map[root] ?: emptySet()
                 val nodes: Set<Node> = when {
-                    children.isEmpty() -> emptySet<Node>()
+                    children.isEmpty() -> emptySet()
                     else -> {
                         val nodes = HashSet<Node>()
                         for (child in children) {
