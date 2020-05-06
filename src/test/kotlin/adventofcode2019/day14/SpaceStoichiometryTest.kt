@@ -15,67 +15,13 @@ class SpaceStoichiometryTest : StringSpec({
         val fuel = Chemical("FUEL")
         val nanoFactory = NanoFactory.fromSequence(
             sequenceOf(
-                ChemicalReaction(
-                    InputChemicals(
-                        setOf(
-                            ChemicalReactionItem(ORE, BigInteger.valueOf(9))
-                        )
-                    ),
-                    ChemicalReactionItem(a, BigInteger.valueOf(2))
-                ),
-                ChemicalReaction(
-                    InputChemicals(
-                        setOf(
-                            ChemicalReactionItem(ORE, BigInteger.valueOf(8))
-                        )
-                    ),
-                    ChemicalReactionItem(b, BigInteger.valueOf(3))
-                ),
-                ChemicalReaction(
-                    InputChemicals(
-                        setOf(
-                            ChemicalReactionItem(ORE, BigInteger.valueOf(7))
-                        )
-                    ),
-                    ChemicalReactionItem(c, BigInteger.valueOf(5))
-                ),
-                ChemicalReaction(
-                    InputChemicals(
-                        setOf(
-                            ChemicalReactionItem(a, BigInteger.valueOf(3)),
-                            ChemicalReactionItem(b, BigInteger.valueOf(4))
-                        )
-                    ),
-                    ChemicalReactionItem(ab, BigInteger.valueOf(1))
-                ),
-                ChemicalReaction(
-                    InputChemicals(
-                        setOf(
-                            ChemicalReactionItem(b, BigInteger.valueOf(5)),
-                            ChemicalReactionItem(c, BigInteger.valueOf(7))
-                        )
-                    ),
-                    ChemicalReactionItem(bc, BigInteger.valueOf(1))
-                ),
-                ChemicalReaction(
-                    InputChemicals(
-                        setOf(
-                            ChemicalReactionItem(c, BigInteger.valueOf(4)),
-                            ChemicalReactionItem(a, BigInteger.valueOf(1))
-                        )
-                    ),
-                    ChemicalReactionItem(ca, BigInteger.valueOf(1))
-                ),
-                ChemicalReaction(
-                    InputChemicals(
-                        setOf(
-                            ChemicalReactionItem(ab, BigInteger.valueOf(2)),
-                            ChemicalReactionItem(bc, BigInteger.valueOf(3)),
-                            ChemicalReactionItem(ca, BigInteger.valueOf(4))
-                        )
-                    ),
-                    ChemicalReactionItem(fuel, BigInteger.valueOf(1))
-                )
+                +(9 * ORE) produce 2 * a,
+                +(8 * ORE) produce 3 * b,
+                +(7 * ORE) produce 5 * c,
+                3 * a + 4 * b produce +ab,
+                5 * b + 7 * c produce +bc,
+                4 * c + 1 * a produce +ca,
+                2 * ab + 3 * bc + 4 * ca produce +fuel
             )
         )
         nanoFactory.chemicalsToProduce(fuel, BigInteger.valueOf(1)) shouldBe mapOf(ORE to BigInteger.valueOf(165))

@@ -70,10 +70,7 @@ private fun searchMaxArg(baseArg: BigInteger, maxValue: BigInteger, function: (B
 private fun String.toReaction(): ChemicalReaction {
     fun String.toChemicalReactionItem(): ChemicalReactionItem {
         val split = split(" ")
-        return ChemicalReactionItem(
-            Chemical(split[1]),
-            split[0].toBigInteger()
-        )
+        return split[0].toBigInteger() * Chemical(split[1])
     }
 
     fun String.toInputChemicals(): InputChemicals {
@@ -87,10 +84,7 @@ private fun String.toReaction(): ChemicalReaction {
     }
 
     val split = split("=>")
-    return ChemicalReaction(
-        split[0].trim().toInputChemicals(),
-        split[1].trim().toChemicalReactionItem()
-    )
+    return split[0].trim().toInputChemicals() produce split[1].trim().toChemicalReactionItem()
 }
 
 internal class NanoFactory private constructor(private val reactions: Map<Chemical, ChemicalReaction>) {
@@ -133,7 +127,10 @@ internal class NanoFactory private constructor(private val reactions: Map<Chemic
             neededChemicals: Map<Chemical, ChemicalRequirements>,
             chemicalReactionItem: ChemicalReactionItem
         ): Map<Chemical, ChemicalRequirements> {
-            val requirements = (neededChemicals[chemicalReactionItem.chemical] ?: ChemicalRequirements(BigInteger.ZERO, BigInteger.ZERO))
+            val requirements = (neededChemicals[chemicalReactionItem.chemical] ?: ChemicalRequirements(
+                BigInteger.ZERO,
+                BigInteger.ZERO
+            ))
                 .addRequired(chemicalReactionItem.quantity)
             return if (chemicalReactionItem.chemical !in RAW_MATERIALS && requirements.requiredQuantity > requirements.producedQuantity) {
                 val neededQuantity = requirements.requiredQuantity - requirements.producedQuantity
@@ -148,7 +145,10 @@ internal class NanoFactory private constructor(private val reactions: Map<Chemic
                     .fold(neededChemicals) { neededCh, ch ->
                         chemicalsToProduce(neededCh, ch * reactionsNeeded)
                     }
-                    .put(chemicalReactionItem.chemical, requirements.addProduced(reaction.outputChemical.quantity * reactionsNeeded))
+                    .put(
+                        chemicalReactionItem.chemical,
+                        requirements.addProduced(reaction.outputChemical.quantity * reactionsNeeded)
+                    )
             } else {
                 neededChemicals.put(chemicalReactionItem.chemical, requirements)
             }
@@ -178,3 +178,23 @@ internal data class ChemicalReactionItem(
 internal class InputChemicals(private val chemicals: Set<ChemicalReactionItem>) {
     fun chemicals(): Set<ChemicalReactionItem> = chemicals
 }
+
+internal operator fun Int.times(chemical: Chemical): ChemicalReactionItem =
+    ChemicalReactionItem(chemical, this.toBigInteger())
+
+internal operator fun BigInteger.times(chemical: Chemical): ChemicalReactionItem =
+    ChemicalReactionItem(chemical, this)
+
+internal operator fun Chemical.unaryPlus(): ChemicalReactionItem =
+    ChemicalReactionItem(this, 1.toBigInteger())
+
+internal operator fun ChemicalReactionItem.unaryPlus(): InputChemicals = InputChemicals(setOf(this))
+
+internal operator fun ChemicalReactionItem.plus(other: ChemicalReactionItem): InputChemicals =
+    InputChemicals(setOf(this, other))
+
+internal operator fun InputChemicals.plus(chemicalReactionItem: ChemicalReactionItem): InputChemicals =
+    InputChemicals(this.chemicals().plus(chemicalReactionItem))
+
+internal infix fun InputChemicals.produce(output: ChemicalReactionItem): ChemicalReaction =
+    ChemicalReaction(this, output)
