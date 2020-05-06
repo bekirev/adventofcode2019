@@ -1,12 +1,11 @@
 package adventofcode2019.day14
 
-import org.junit.Assert
-import org.junit.Test
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import java.math.BigInteger
 
-class SpaceStoichiometryTest {
-    @Test
-    fun test1() {
+class SpaceStoichiometryTest : StringSpec({
+    "should calculate required chemicals" {
         val a = Chemical("A")
         val b = Chemical("B")
         val c = Chemical("C")
@@ -79,6 +78,6 @@ class SpaceStoichiometryTest {
                 )
             )
         )
-        Assert.assertEquals(mapOf(ORE to BigInteger.valueOf(165)), nanoFactory.chemicalsToProduce(fuel, BigInteger.valueOf(1)))
+        nanoFactory.chemicalsToProduce(fuel, BigInteger.valueOf(1)) shouldBe mapOf(ORE to BigInteger.valueOf(165))
     }
-}
+})

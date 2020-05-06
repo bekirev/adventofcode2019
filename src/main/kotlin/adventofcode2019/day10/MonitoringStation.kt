@@ -106,7 +106,10 @@ internal fun Sequence<String>.asGrid(): Grid<PositionState> {
         else -> throw IllegalArgumentException("Unknown char for position state: $this")
     }
     return ArrayGrid.fromListSequence(
-        this.map(String::asSequence)
-            .map { it.map(Char::toPositionState).toList() }
+        this.filter(String::isNotBlank)
+            .map(String::asSequence)
+            .map { charSeq ->
+                charSeq.map(Char::toPositionState).toList()
+            }
     )
 }

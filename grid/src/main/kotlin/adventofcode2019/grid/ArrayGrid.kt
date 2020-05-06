@@ -8,14 +8,17 @@ class ArrayGrid<T> private constructor(
         Bounds(0, rows[0].size - 1, 0, rows.size - 1),
         rows
     )
-    private val size by lazy { Size(
-        bounds.maxX - bounds.minX + 1,
-        bounds.maxY - bounds.minY + 1
-    ) }
+
+    private val size by lazy {
+        Size(
+            bounds.maxX - bounds.minX + 1,
+            bounds.maxY - bounds.minY + 1
+        )
+    }
 
     init {
         for (i in 0 until size.height) {
-            assert(rows[i].size != size.width) {"Arrays have different size"}
+            check(rows[i].size == size.width) { "Arrays have different size" }
         }
     }
 

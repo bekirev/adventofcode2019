@@ -8,9 +8,10 @@ data class Bounds(
 ) {
     val xRange by lazy { minX..maxX }
     val yRange by lazy { minY..maxY }
+
     init {
-        assert(maxX < minX) { "maxX shouldn't be less than minX" }
-        assert(maxY < minY) { "maxY shouldn't be less than minY" }
+        check(maxX >= minX) { "maxX shouldn't be less than minX" }
+        check(maxY >= minY) { "maxY shouldn't be less than minY" }
     }
 
     fun allPositions(): Sequence<Position> = sequence {

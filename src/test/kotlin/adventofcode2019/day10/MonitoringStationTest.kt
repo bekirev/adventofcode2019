@@ -1,23 +1,26 @@
 package adventofcode2019.day10
 
 import adventofcode2019.grid.Position
-import org.junit.Assert
-import org.junit.Test
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
+import io.kotest.matchers.shouldBe
 
-class MonitoringStationTest {
-    @Test
-    fun test0() {
-        val map = """.#..#
+class MonitoringStationTest : StringSpec({
+    "Monitor station test" {
+        forAll(
+            row(
+                """
+.#..#
 .....
 #####
 ....#
-...##""".lineSequence().asGrid()
-        Assert.assertEquals(ObservationPosition(Position(3, 4), 8), map.bestObservationPosition())
-    }
-
-    @Test
-    fun test1() {
-        val map = """......#.#.
+...##""",
+                ObservationPosition(Position(3, 4), 8)
+            ),
+            row(
+                """
+......#.#.
 #..#.#....
 ..#######.
 .#.#.###..
@@ -26,13 +29,12 @@ class MonitoringStationTest {
 #..#....#.
 .##.#..###
 ##...#..#.
-.#....####""".lineSequence().asGrid()
-        Assert.assertEquals(ObservationPosition(Position(5, 8), 33), map.bestObservationPosition())
-    }
-
-    @Test
-    fun test2() {
-        val map = """#.#...#.#.
+.#....####""",
+                ObservationPosition(Position(5, 8), 33)
+            ),
+            row(
+                """
+#.#...#.#.
 .###....#.
 .#....#...
 ##.#.#.#.#
@@ -41,13 +43,12 @@ class MonitoringStationTest {
 ..#...##..
 ..##....##
 ......#...
-.####.###.""".lineSequence().asGrid()
-        Assert.assertEquals(ObservationPosition(Position(1, 2), 35), map.bestObservationPosition())
-    }
-
-    @Test
-    fun test3() {
-        val map = """.#..#..###
+.####.###.""",
+                ObservationPosition(Position(1, 2), 35)
+            ),
+            row(
+                """
+.#..#..###
 ####.###.#
 ....###.#.
 ..###.##.#
@@ -56,13 +57,12 @@ class MonitoringStationTest {
 ..#.#..#.#
 #..#.#.###
 .##...##.#
-.....#.#..""".lineSequence().asGrid()
-        Assert.assertEquals(ObservationPosition(Position(6, 3), 41), map.bestObservationPosition())
-    }
-
-    @Test
-    fun test4() {
-        val map = """.#..##.###...#######
+.....#.#..""",
+                ObservationPosition(Position(6, 3), 41)
+            ),
+            row(
+                """
+.#..##.###...#######
 ##.############..##.
 .#.######.########.#
 .###.#######.####.#.
@@ -81,12 +81,11 @@ class MonitoringStationTest {
 ....##.##.###..#####
 .#.#.###########.###
 #.#.#.#####.####.###
-###.##.####.##.#..##""".lineSequence().asGrid()
-        Assert.assertEquals(ObservationPosition(Position(11, 13), 210), map.bestObservationPosition())
+###.##.####.##.#..##""",
+                ObservationPosition(Position(11, 13), 210)
+            )
+        ) { mapStr, obsPos ->
+            mapStr.lineSequence().asGrid().bestObservationPosition() shouldBe obsPos
+        }
     }
-
-    @Test
-    fun test5() {
-
-    }
-}
+})
